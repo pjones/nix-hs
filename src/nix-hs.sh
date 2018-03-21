@@ -22,23 +22,37 @@ export HASKELL_PROJECT_DIR
 
 ################################################################################
 option_compiler=default
+option_ci_compilers=()
 option_profiling=false
 option_debug=0
 option_tool=""
 option_nixshell_args=()
+option_publish=true
 
 ################################################################################
 usage () {
 cat <<EOF
-Usage: nix-hs [options] (build|test|clean|repl|shell)
+Usage: nix-hs [options] <command>
 
-  -c VER  Use GHC version VER
+  -c VER  Use GHC version VER (also VER,VER,VER,etc.)
   -d      Enable debugging info for nix-hs
   -h      This message
   -I PATH Add PATH to NIX_PATH
+  -P      Don't publish releases [default: publish]
   -p      Enable profiling [default: off]
   -n PATH Shortcut for '-I nixpkgs=PATH'
   -t TYPE Force using build type TYPE (cabal|stack|make)
+
+Commands:
+
+  build:   Compile the package
+  check:   Run some compliance checks on the package
+  clean:   Remove all build artifacts
+  release: Build and upload a package to Hackage
+  repl:    Start GHCi with the package loaded
+  shell:   Start a nix shell for the package
+  test:    Compile and test the package
+
 EOF
 }
 
@@ -46,6 +60,15 @@ EOF
 die() {
   echo "ERROR:" "$@" > /dev/stderr
   exit 1
+}
+
+################################################################################
+banner() {
+  echo
+  echo "============================================================"
+  echo "$@"
+  echo "============================================================"
+  echo
 }
 
 ################################################################################
@@ -90,6 +113,23 @@ find_project() {
 }
 
 ################################################################################
+# Create a proper GHC version string as used in nixpkgs.
+set_compiler_version() {
+  local versions=()
+  mapfile -t versions < <(echo "$1" | sed -E 's/,/\n/g')
+
+  if [ "${#versions[@]}" -gt 1 ]; then
+    for ver in "${versions[@]}"; do
+      option_ci_compilers+=( "$(echo "$ver" | tr -d '.')" )
+    done
+
+    option_compiler=${option_ci_compilers[0]}
+  else
+    option_compiler=$(echo "$1" | tr -d '.')
+  fi
+}
+
+################################################################################
 # Check to see if the project root is *not* the same directory as the
 # project directory.  This is a common directory layout with stack
 # where one stack.yaml file is used to point to several projects.
@@ -115,13 +155,23 @@ nix_shell() {
     extra_options+=("--show-trace")
   fi
 
+  nix-shell "${option_nixshell_args[@]}" "${extra_options[@]}" "$@"
+}
+
+################################################################################
+nix_shell_extra() {
+  local extra_options=()
+
+  if [ "$option_debug" -eq 1 ]; then
+    extra_options+=("--show-trace")
+  fi
+
   # FIXME: support all interactive.nix options.
 
-  nix-shell --pure "$@" \
+  nix_shell --pure "$@" \
             --argstr file "$(pwd)/default.nix" \
             --argstr compiler "$option_compiler" \
             --arg profiling "$option_profiling" \
-            "${option_nixshell_args[@]}" "${extra_options[@]}" \
             @interactive@
 }
 
@@ -148,27 +198,56 @@ cabal_configure() {
   local datestamp=dist/.configure-run-date
 
   if [ ! -r "$datestamp" ] || [ "$cabal_file" -nt "$datestamp" ]; then
-    nix_shell --command "do_cabal_configure"
+    nix_shell_extra --command "do_cabal_configure"
     date > dist/.configure-run-date
   fi
 }
 
 ################################################################################
 run_cabal() {
+  local upload_flags=()
+  local upload_name="dist/${HASKELL_PROJECT_NAME}-*.tar.gz"
+
+  if [ "$option_publish" = true ]; then
+    upload_flags+=("--publish")
+  fi
+
   prepare_nix_files
   cabal_configure
 
   case "${1:-build}" in
     repl)
-      nix_shell --command "do_cabal_repl lib:$HASKELL_PROJECT_NAME"
+      nix_shell_extra --command "do_cabal_repl lib:$HASKELL_PROJECT_NAME"
+      ;;
+
+    check)
+      echo "==> packdeps says: (checking dependency versions)"
+      nix_shell -p haskellPackages.packdeps --run "packdeps ${HASKELL_PROJECT_NAME}.cabal"
+
+      echo "==> The tested-with cabal field says: (used for Travis CI)"
+      grep -i tested-with: "${HASKELL_PROJECT_NAME}.cabal" || :
+
+      echo "==> Updating Travis CI configuration file"
+      nix_shell -p multi-ghc-travis \
+                --run "make-travis-yml ${HASKELL_PROJECT_NAME}.cabal > .travis.yml"
+      ;;
+
+    release)
+      run_cabal clean
+      run_cabal build
+      nix_shell -p haskellPackages.cabal-install \
+                --run "cabal sdist"
+
+      nix_shell -p haskellPackages.cabal-install \
+                --run "cabal upload ${upload_flags[*]} $upload_name"
       ;;
 
     shell)
-      nix_shell
+      nix_shell_extra
       ;;
 
     *)
-      nix_shell --command "do_cabal_$1"
+      nix_shell_extra --command "do_cabal_$1"
       ;;
   esac
 }
@@ -188,7 +267,7 @@ run_stack() {
 
   case "${1:-build}" in
     shell)
-      nix_shell
+      nix_shell_extra
       ;;
 
     *)
@@ -215,10 +294,44 @@ run_make() {
 }
 
 ################################################################################
+command_supports_multiple_runs() {
+  local command=$1
+
+  case "$command" in
+    build|test|clean|check)
+      return 0
+      ;;
+
+    *)
+      return 1
+      ;;
+  esac
+}
+
+################################################################################
+run_tool() {
+  local tool=$1; shift
+  local command=$1; shift
+
+  if [ "${#option_ci_compilers[@]}" -gt 0 ] && \
+       command_supports_multiple_runs "$command"
+  then
+    for ver in "${option_ci_compilers[@]}"; do
+      option_compiler="$ver"
+      banner "GHC: $ver"
+      "run_${tool}" "clean"
+      "run_${tool}" "$command" "$@"
+    done
+  else
+    "run_${tool}" "$command" "$@"
+  fi
+}
+
+################################################################################
 # Process the command line:
-while getopts "c:dhI:pn:t:" o; do
+while getopts "c:dhI:Ppn:t:" o; do
   case "${o}" in
-    c) option_compiler=$(echo "$OPTARG" | tr -d '.')
+    c) set_compiler_version "$OPTARG"
        ;;
 
     d) option_debug=1
@@ -232,11 +345,15 @@ while getopts "c:dhI:pn:t:" o; do
     I) option_nixshell_args+=("-I" "$OPTARG")
        ;;
 
+    P) option_publish=false
+       ;;
+
     p) option_profiling=true
        ;;
 
     n) option_nixshell_args+=("-I" "nixpkgs=$OPTARG")
        ;;
+
 
     t) option_tool=$OPTARG
        ;;
@@ -261,11 +378,11 @@ if [ -n "$option_tool" ]; then
   tool=$option_tool
 else
   if find_stack_root; then
-    tool=stack
+    tool="stack"
   elif [ -r Makefile ] || [ -r GNUmakefile ]; then
-    tool=make
+    tool="make"
   else
-    tool=cabal
+    tool="cabal"
   fi
 fi
 
@@ -295,23 +412,20 @@ if [ "${1:-}" = "--" ]; then shift; fi
 
 case "$command" in
   new-build|build)
-    "run_${tool}" build "$@"
-    ;;
-
-  test)
-    "run_${tool}" test "$@"
-    ;;
-
-  clean)
-    "run_${tool}" clean "$@"
+    run_tool "$tool" "build" "$@"
     ;;
 
   new-repl|repl)
-    "run_${tool}" repl "$@"
+    run_tool "$tool" "repl" "$@"
     ;;
 
-  shell)
-    "run_${tool}" shell "$@"
+  new-test|test)
+    run_tool "$tool" "test" "$@"
+    ;;
+
+
+  shell|clean|check|release)
+    run_tool "$tool" "$command" "$@"
     ;;
 
   *)
