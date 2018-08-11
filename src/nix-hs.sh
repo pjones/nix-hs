@@ -24,6 +24,7 @@ export HASKELL_PROJECT_DIR
 option_compiler=default
 option_ci_compilers=()
 option_profiling=false
+option_haddocks=true
 option_debug=0
 option_tool=""
 option_nixshell_args=()
@@ -37,6 +38,7 @@ Usage: nix-hs [options] <command>
   -c VER  Use GHC version VER (also VER,VER,VER,etc.)
   -d      Enable debugging info for nix-hs
   -h      This message
+  -H      Disable building haddocks
   -I PATH Add PATH to NIX_PATH
   -P      Don't publish releases [default: publish]
   -p      Enable profiling [default: off]
@@ -172,6 +174,7 @@ nix_shell_extra() {
             --argstr file "$(pwd)/default.nix" \
             --argstr compiler "$option_compiler" \
             --arg profiling "$option_profiling" \
+            --arg doHaddock "$option_haddocks" \
             @interactive@
 }
 
@@ -329,13 +332,16 @@ run_tool() {
 
 ################################################################################
 # Process the command line:
-while getopts "c:dhI:Ppn:t:" o; do
+while getopts "c:dHhI:Ppn:t:" o; do
   case "${o}" in
     c) set_compiler_version "$OPTARG"
        ;;
 
     d) option_debug=1
        set -x
+       ;;
+
+    H) option_haddocks=false
        ;;
 
     h) usage

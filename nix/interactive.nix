@@ -28,6 +28,7 @@ let
 
   cabalConfigureFlags = concatStringsSep " "
     [ (optionalString optimization "--enable-optimization")
+      (optionalString profiling    "--enable-profiling")
       "--enable-tests" # Safe to always keep on.
     ];
 
@@ -87,18 +88,6 @@ let
           });
     });
   });
-
-  # haskell = basePackages.extend (self: super: {
-  #     mkDerivation = { shellHook ? ""
-  #                    , ...
-  #                    }@args:
-  #       super.mkDerivation (args // {
-  #         inherit doHaddock;
-  #         shellHook = shellHook + shellFunctions;
-  #         enableLibraryProfiling = profiling;
-  #         enableExecutableProfiling = profiling;
-  #       });
-  # });
 
   # Override the Haskell package set with the one from above:
   alteredPackages = pkgs // { haskellPackages = haskell; };
