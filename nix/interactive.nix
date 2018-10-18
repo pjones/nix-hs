@@ -15,7 +15,7 @@
 , compiler     ? "default" # Which version of GHC to use, or "default".
 , profiling    ? false     # Enable profiling or not.
 , optimization ? true      # Enable optimization or not.
-, doHaddock    ? true      # Create documentation for dependencies.
+, doHaddock    ? false     # Create documentation for dependencies.
 , file                     # The package file (default.nix) to load.
 }:
 

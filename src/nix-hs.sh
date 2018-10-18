@@ -24,11 +24,12 @@ export HASKELL_PROJECT_DIR
 option_compiler=default
 option_ci_compilers=()
 option_profiling=false
-option_haddocks=true
+option_haddocks=false
 option_debug=0
 option_tool=""
 option_nixshell_args=()
 option_publish=true
+option_import_nixpkgs=true
 
 ################################################################################
 usage () {
@@ -38,16 +39,17 @@ Usage: nix-hs [options] <command>
   -c VER  Use GHC version VER (also VER,VER,VER,etc.)
   -d      Enable debugging info for nix-hs
   -h      This message
-  -H      Disable building haddocks
+  -H      Enable building haddocks
   -I PATH Add PATH to NIX_PATH
   -P      Don't publish releases [default: publish]
   -p      Enable profiling [default: off]
-  -n PATH Shortcut for '-I nixpkgs=PATH'
+  -n PATH Shortcut for '-I nixpkgs=PATH' (implies -N)
+  -N      Don't load nix/nixpkgs.nix
   -t TYPE Force using build type TYPE (cabal|stack|make)
 
 Commands:
 
-  build:   Compile the package
+  build:   Compile the package (default command)
   check:   Run some compliance checks on the package
   clean:   Remove all build artifacts
   release: Build and upload a package to Hackage
@@ -153,6 +155,12 @@ find_stack_root() {
 nix_shell() {
   local extra_options=()
 
+  if [ -e nix/nixpkgs.nix ] && [ "$option_import_nixpkgs" = true ]; then
+    extra_options+=("--arg")
+    extra_options+=("pkgs")
+    extra_options+=("import $(pwd)/nix/nixpkgs.nix")
+  fi
+
   if [ "$option_debug" -eq 1 ]; then
     extra_options+=("--show-trace")
   fi
@@ -162,14 +170,6 @@ nix_shell() {
 
 ################################################################################
 nix_shell_extra() {
-  local extra_options=()
-
-  if [ "$option_debug" -eq 1 ]; then
-    extra_options+=("--show-trace")
-  fi
-
-  # FIXME: support all interactive.nix options.
-
   nix_shell --pure "$@" \
             --argstr file "$(pwd)/default.nix" \
             --argstr compiler "$option_compiler" \
@@ -189,7 +189,7 @@ prepare_nix_files() {
   fi
 
   if [ ! -r "default.nix" ]; then
-    sed -e "s/@PROJECT@/${HASKELL_PROJECT_NAME}/g" \
+    sed -e "s/@NIX_FILE@/${nix_file}/g" \
         < @templates@/default.nix > default.nix
   fi
 }
@@ -332,7 +332,7 @@ run_tool() {
 
 ################################################################################
 # Process the command line:
-while getopts "c:dHhI:Ppn:t:" o; do
+while getopts "c:dHhI:Ppn:Nt:" o; do
   case "${o}" in
     c) set_compiler_version "$OPTARG"
        ;;
@@ -341,7 +341,7 @@ while getopts "c:dHhI:Ppn:t:" o; do
        set -x
        ;;
 
-    H) option_haddocks=false
+    H) option_haddocks=true
        ;;
 
     h) usage
@@ -358,8 +358,11 @@ while getopts "c:dHhI:Ppn:t:" o; do
        ;;
 
     n) option_nixshell_args+=("-I" "nixpkgs=$OPTARG")
+       option_import_nixpkgs=false
        ;;
 
+    N) option_import_nixpkgs=false
+       ;;
 
     t) option_tool=$OPTARG
        ;;
