@@ -26,7 +26,6 @@ option_ci_compilers=()
 option_profiling=false
 option_haddocks=false
 option_debug=0
-option_tool=""
 option_nixshell_args=()
 option_publish=true
 option_import_nixpkgs=true
@@ -45,7 +44,6 @@ Usage: nix-hs [options] <command>
   -p      Enable profiling [default: off]
   -n PATH Shortcut for '-I nixpkgs=PATH' (implies -N)
   -N      Don't load nix/nixpkgs.nix
-  -t TYPE Force using build type TYPE (cabal|stack|make)
 
 Commands:
 
@@ -134,24 +132,6 @@ set_compiler_version() {
 }
 
 ################################################################################
-# Check to see if the project root is *not* the same directory as the
-# project directory.  This is a common directory layout with stack
-# where one stack.yaml file is used to point to several projects.
-find_stack_root() {
-  # See if the parent directory has a stack file:
-  export STACK_YAML=${STACK_YAML:-stack.yaml}
-
-  if [ -r "$STACK_YAML" ]; then
-    return 0
-  elif [ ! -r "$STACK_YAML" ] && [ -r ../"$STACK_YAML" ]; then
-    export STACK_YAML="../$STACK_YAML"
-    return 0
-  fi
-
-  return 1
-}
-
-################################################################################
 nix_shell() {
   local extra_options=()
 
@@ -174,7 +154,6 @@ nix_shell_extra() {
             --argstr file "$(pwd)/default.nix" \
             --argstr compiler "$option_compiler" \
             --arg profiling "$option_profiling" \
-            --arg doHaddock "$option_haddocks" \
             @interactive@
 }
 
@@ -251,47 +230,9 @@ run_cabal() {
 
     *)
       nix_shell_extra --command "do_cabal_$1"
-      ;;
-  esac
-}
-
-################################################################################
-# TOOL: stack
-run_stack() {
-  prepare_nix_files
-  local stack_flags=()
-
-  if [ "$option_profiling" = true ]; then
-    if [ "${1:-build}" = build ]; then
-      stack_flags+=("--library-profiling")
-      stack_flags+=("--executable-profiling")
-    fi
-  fi
-
-  case "${1:-build}" in
-    shell)
-      nix_shell_extra
-      ;;
-
-    *)
-      @stack@/bin/stack \
-        --nix --nix-shell-file=@stacknix@ \
-        --nix-shell-options "--argstr file $(pwd)/default.nix" \
-        "$@" "${stack_flags[@]}"
-      ;;
-  esac
-}
-
-################################################################################
-# TOOL: make
-run_make() {
-  case "${1:-build}" in
-    build)
-      make
-      ;;
-
-    *)
-      make "$@"
+      if [ "$option_haddocks" = "true" ]; then
+        nix_shell_extra --command "do_cabal_haddock"
+      fi
       ;;
   esac
 }
@@ -313,7 +254,6 @@ command_supports_multiple_runs() {
 
 ################################################################################
 run_tool() {
-  local tool=$1; shift
   local command=$1; shift
 
   if [ "${#option_ci_compilers[@]}" -gt 0 ] && \
@@ -322,17 +262,17 @@ run_tool() {
     for ver in "${option_ci_compilers[@]}"; do
       option_compiler="$ver"
       banner "GHC: $ver"
-      "run_${tool}" "clean"
-      "run_${tool}" "$command" "$@"
+      run_cabal "clean"
+      run_cabal "$command" "$@"
     done
   else
-    "run_${tool}" "$command" "$@"
+    run_cabal "$command" "$@"
   fi
 }
 
 ################################################################################
 # Process the command line:
-while getopts "c:dHhI:Ppn:Nt:" o; do
+while getopts "c:dHhI:Ppn:N" o; do
   case "${o}" in
     c) set_compiler_version "$OPTARG"
        ;;
@@ -364,9 +304,6 @@ while getopts "c:dHhI:Ppn:Nt:" o; do
     N) option_import_nixpkgs=false
        ;;
 
-    t) option_tool=$OPTARG
-       ;;
-
     *) exit 1
        ;;
   esac
@@ -382,38 +319,6 @@ find_project
 if [ "${1:-build}" = cabal ] && [ "$#" -eq 2 ]; then shift; fi
 
 ################################################################################
-# Figure out which tool we should be using:
-if [ -n "$option_tool" ]; then
-  tool=$option_tool
-else
-  if find_stack_root; then
-    tool="stack"
-  elif [ -r Makefile ] || [ -r GNUmakefile ]; then
-    tool="make"
-  else
-    tool="cabal"
-  fi
-fi
-
-case "$tool" in
-  cabal)
-    : # No settings needed
-    ;;
-
-  stack)
-    : # No settings needed
-    ;;
-
-  make)
-    : # No settings needed
-    ;;
-
-  *)
-    die "unknown build tool: $tool"
-    ;;
-esac
-
-################################################################################
 # Main dispatch code:
 command="${1:-build}"
 if [ $# -gt 0 ]; then shift; fi
@@ -421,20 +326,20 @@ if [ "${1:-}" = "--" ]; then shift; fi
 
 case "$command" in
   new-build|build)
-    run_tool "$tool" "build" "$@"
+    run_tool "build" "$@"
     ;;
 
   new-repl|repl)
-    run_tool "$tool" "repl" "$@"
+    run_tool "repl" "$@"
     ;;
 
   new-test|test)
-    run_tool "$tool" "test" "$@"
+    run_tool "test" "$@"
     ;;
 
 
   shell|clean|check|release)
-    run_tool "$tool" "$command" "$@"
+    run_tool "$command" "$@"
     ;;
 
   *)

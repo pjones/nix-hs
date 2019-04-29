@@ -20,7 +20,7 @@ with lib;
 let
   drv = stdenvNoCC.mkDerivation rec {
     name = "nix-hs-${version}";
-    version = "0.2.0";
+    version = "0.3.0";
 
     phases = [ "installPhase" ];
 
@@ -29,17 +29,14 @@ let
 
       export bash=${bash}
       export cabal2nix=${cabal2nix}
-      export stack=${haskellPackages.stack}
       export templates=$out/templates
       export interactive=$out/lib/interactive.nix
-      export stacknix=$out/lib/stack.nix
 
       substituteAll ${../src/nix-hs.sh} $out/bin/nix-hs
       chmod 0555 $out/bin/nix-hs
 
       install -m0444 ${../templates/default.nix} $out/templates/default.nix
       install -m0444 ${../nix/interactive.nix} $out/lib/interactive.nix
-      install -m0400 ${../nix/stack.nix} $out/lib/stack.nix
     '';
   };
 in {

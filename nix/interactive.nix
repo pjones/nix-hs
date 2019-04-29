@@ -15,7 +15,6 @@
 , compiler     ? "default" # Which version of GHC to use, or "default".
 , profiling    ? false     # Enable profiling or not.
 , optimization ? true      # Enable optimization or not.
-, doHaddock    ? false     # Create documentation for dependencies.
 , file                     # The package file (default.nix) to load.
 }:
 
@@ -24,7 +23,7 @@ with pkgs.lib;
 let
 
   # Some handy bindings:
-  cabal = "${haskell.cabal-install}/bin/cabal";
+  cabal = "${basePackages.cabal-install}/bin/cabal";
 
   cabalConfigureFlags = concatStringsSep " "
     [ (optionalString optimization "--enable-optimization")
@@ -63,6 +62,11 @@ let
       set -e
       cabal repl "$@"
     }
+
+    do_cabal_haddock() {
+      set -e
+      cabal haddock
+    }
   '';
 
   # Select a compiler:
@@ -71,28 +75,16 @@ let
       then pkgs.haskellPackages
       else pkgs.haskell.packages."ghc${compiler}";
 
-  # Overrides to control properties such as profiling.  This is a bit
-  # of a mess because Haskell overrides in Nix don't seem to compose
-  # well: https://github.com/NixOS/nixpkgs/issues/26561
-  haskell = basePackages.override (orig: {
-    overrides = composeExtensions (orig.overrides or (_: _: {}))
-      (self: super: {
-        mkDerivation = { shellHook ? ""
-                       , ...
-                       }@args:
-          super.mkDerivation (args // {
-            inherit doHaddock;
-            shellHook = shellHook + shellFunctions;
-            enableLibraryProfiling = profiling;
-            enableExecutableProfiling = profiling;
-          });
-    });
-  });
-
   # Override the Haskell package set with the one from above:
-  alteredPackages = pkgs // { haskellPackages = haskell; };
+  alteredPackages = pkgs // { haskellPackages = basePackages; };
 
-  # Load the local file:
-  drv = import file { pkgs = alteredPackages; };
+  # Load the local file and override its shell environment:
+  drv = (import file { pkgs = alteredPackages; }).overrideAttrs (orig: {
+    passthru = orig.passthru // {
+      env = orig.passthru.env.overrideAttrs (_env: {
+        shellHook = _env.shellHook + shellFunctions;
+      });
+    };
+  });
 
 in drv.env
