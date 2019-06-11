@@ -177,11 +177,11 @@ prepare_nix_files() {
 # If needed, run `cabal configure'.
 cabal_configure() {
   local cabal_file=${HASKELL_PROJECT_NAME}.cabal
-  local datestamp=dist/.configure-run-date
+  local datestamp=dist-newstyle/.configure-run-date
 
   if [ ! -r "$datestamp" ] || [ "$cabal_file" -nt "$datestamp" ]; then
     nix_shell_extra --command "do_cabal_configure"
-    date > dist/.configure-run-date
+    date > "$datestamp"
   fi
 }
 
@@ -218,7 +218,7 @@ run_cabal() {
       run_cabal clean
       run_cabal build
       nix_shell -p haskellPackages.cabal-install \
-                --run "cabal sdist"
+                --run "cabal v2-sdist"
 
       nix_shell -p haskellPackages.cabal-install \
                 --run "cabal upload ${upload_flags[*]} $upload_name"

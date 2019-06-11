@@ -40,32 +40,32 @@ let
 
     do_cabal_configure() {
       set -e
-      cabal configure ${cabalConfigureFlags}
+      cabal v2-configure ${cabalConfigureFlags}
     }
 
     do_cabal_build() {
       set -e
-      cabal build
+      cabal v2-build
     }
 
     do_cabal_test() {
       set -e
-      cabal test
+      cabal v2-test
     }
 
     do_cabal_clean() {
       set -e
-      cabal clean
+      cabal v2-clean
     }
 
     do_cabal_repl() {
       set -e
-      cabal repl "$@"
+      cabal v2-repl "$@"
     }
 
     do_cabal_haddock() {
       set -e
-      cabal haddock
+      cabal v2-haddock
     }
   '';
 
