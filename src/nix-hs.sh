@@ -199,7 +199,7 @@ run_cabal() {
 
   case "${1:-build}" in
     repl)
-      nix_shell_extra --command "do_cabal_repl lib:$HASKELL_PROJECT_NAME"
+      nix_shell_extra --command "do_cabal_repl lib:$HASKELL_PROJECT_NAME $*"
       ;;
 
     check)
@@ -316,7 +316,7 @@ find_project
 
 ################################################################################
 # For tools that treat this script like `cabal':
-if [ "${1:-build}" = cabal ] && [ "$#" -eq 2 ]; then shift; fi
+if [ "${1:-build}" = cabal ]; then shift; fi
 
 ################################################################################
 # Main dispatch code:
