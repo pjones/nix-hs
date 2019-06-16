@@ -197,9 +197,12 @@ run_cabal() {
   prepare_nix_files
   cabal_configure
 
-  case "${1:-build}" in
+  command="${1:-build}"
+  [ $# -gt 0 ] && shift
+
+  case "$command" in
     repl)
-      nix_shell_extra --command "do_cabal_repl lib:$HASKELL_PROJECT_NAME $*"
+      nix_shell_extra --command "do_cabal_repl $*"
       ;;
 
     check)
