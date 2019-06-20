@@ -232,7 +232,7 @@ run_cabal() {
       ;;
 
     *)
-      nix_shell_extra --command "do_cabal_$1"
+      nix_shell_extra --command "do_cabal_$command"
       if [ "$option_haddocks" = "true" ]; then
         nix_shell_extra --command "do_cabal_haddock"
       fi
