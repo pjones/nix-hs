@@ -174,18 +174,6 @@ prepare_nix_files() {
 }
 
 ################################################################################
-# If needed, run `cabal configure'.
-cabal_configure() {
-  local cabal_file=${HASKELL_PROJECT_NAME}.cabal
-  local datestamp=dist-newstyle/.configure-run-date
-
-  if [ ! -r "$datestamp" ] || [ "$cabal_file" -nt "$datestamp" ]; then
-    nix_shell_extra --command "do_cabal_configure"
-    date > "$datestamp"
-  fi
-}
-
-################################################################################
 run_cabal() {
   local upload_flags=()
   local upload_name="dist/${HASKELL_PROJECT_NAME}-*.tar.gz"
@@ -195,7 +183,6 @@ run_cabal() {
   fi
 
   prepare_nix_files
-  cabal_configure
 
   command="${1:-build}"
   [ $# -gt 0 ] && shift

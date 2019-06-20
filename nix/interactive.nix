@@ -25,10 +25,10 @@ let
   # Some handy bindings:
   cabal = "${basePackages.cabal-install}/bin/cabal";
 
-  cabalConfigureFlags = concatStringsSep " "
+  cabalFlags = concatStringsSep " "
     [ (optionalString optimization "--enable-optimization")
       (optionalString profiling    "--enable-profiling")
-      "--enable-tests" # Safe to always keep on.
+      "--write-ghc-environment-files=never"
     ];
 
   # These are the shell functions that `nix-hs' will call into.
@@ -38,19 +38,14 @@ let
     # without the blank line above.
     alias cabal='${cabal} --config-file=/dev/null'
 
-    do_cabal_configure() {
-      set -e
-      cabal v2-configure ${cabalConfigureFlags}
-    }
-
     do_cabal_build() {
       set -e
-      cabal v2-build
+      cabal v2-build ${cabalFlags}
     }
 
     do_cabal_test() {
       set -e
-      cabal v2-test
+      cabal v2-test ${cabalFlags}
     }
 
     do_cabal_clean() {
@@ -60,7 +55,7 @@ let
 
     do_cabal_repl() {
       set -e
-      cabal v2-repl "$@"
+      cabal v2-repl ${cabalFlags} "$@"
     }
 
     do_cabal_haddock() {
