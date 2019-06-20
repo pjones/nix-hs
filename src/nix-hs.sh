@@ -29,6 +29,7 @@ option_debug=0
 option_nixshell_args=()
 option_publish=true
 option_import_nixpkgs=true
+option_impure=false
 
 ################################################################################
 usage () {
@@ -39,6 +40,7 @@ Usage: nix-hs [options] <command>
   -d      Enable debugging info for nix-hs
   -h      This message
   -H      Enable building haddocks
+  -i      Use an impure nix-shell
   -I PATH Add PATH to NIX_PATH
   -P      Don't publish releases [default: publish]
   -p      Enable profiling [default: off]
@@ -150,11 +152,17 @@ nix_shell() {
 
 ################################################################################
 nix_shell_extra() {
-  nix_shell --pure "$@" \
-            --argstr file "$(pwd)/default.nix" \
-            --argstr compiler "$option_compiler" \
-            --arg profiling "$option_profiling" \
-            @interactive@
+  local extra=()
+
+  extra+=("--argstr" "file" "$(pwd)/default.nix")
+  extra+=("--argstr" "compiler" "$option_compiler")
+  extra+=("--arg" "profiling" "$option_profiling")
+
+  if [ "$option_impure" = "false" ]; then
+    extra+=("--pure")
+  fi
+
+  nix_shell "${extra[@]}" "$@" @interactive@
 }
 
 ################################################################################
@@ -262,7 +270,7 @@ run_tool() {
 
 ################################################################################
 # Process the command line:
-while getopts "c:dHhI:Ppn:N" o; do
+while getopts "c:dHhiI:Ppn:N" o; do
   case "${o}" in
     c) set_compiler_version "$OPTARG"
        ;;
@@ -279,6 +287,9 @@ while getopts "c:dHhI:Ppn:N" o; do
        ;;
 
     I) option_nixshell_args+=("-I" "$OPTARG")
+       ;;
+
+    i) option_impure=true
        ;;
 
     P) option_publish=false
