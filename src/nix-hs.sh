@@ -54,6 +54,7 @@ Commands:
   clean:   Remove all build artifacts
   release: Build and upload a package to Hackage
   repl:    Start GHCi with the package loaded
+  run:     Call 'cabal run'
   shell:   Start a nix shell for the package
   test:    Compile and test the package
 
@@ -222,6 +223,10 @@ run_cabal() {
                 --run "cabal upload ${upload_flags[*]} $upload_name"
       ;;
 
+    run)
+      nix_shell_extra --command "do_cabal_run $*"
+      ;;
+
     shell)
       nix_shell_extra
       ;;
@@ -340,6 +345,10 @@ case "$command" in
 
 
   shell|clean|check|release)
+    run_tool "$command" "$@"
+    ;;
+
+  run)
     run_tool "$command" "$@"
     ;;
 

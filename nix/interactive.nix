@@ -58,6 +58,11 @@ let
       cabal v2-repl ${cabalFlags} "$@"
     }
 
+    do_cabal_run() {
+      set -e
+      cabal v2-run ${cabalFlags} -v0 "$@"
+    }
+
     do_cabal_haddock() {
       set -e
       cabal v2-haddock
