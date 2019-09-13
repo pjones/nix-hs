@@ -64,6 +64,11 @@ let
   # An environment that includes common development tools such as
   # `cabal-install' and `hlint'.
   env = drv.env.overrideAttrs (orig: {
+    passthru = orig.passthru or {} // {
+      # Expose this package's executables if requested:
+      bin = hlib.justStaticExecutables drv;
+    };
+
     buildInputs = orig.buildInputs ++
       (with haskell; [
         cabal-install

@@ -81,6 +81,33 @@ file:
 use nix
 ```
 
+A Word About Automatic Shell Detection
+--------------------------------------
+
+The `nix-hs` function automatically detects if it's being run inside a
+`nix-shell` and returns an appropriate environment instead of a
+package derivation.  Sometimes that's not what you want.
+
+If what you really want is to load the package binaries you can use
+the `bin` attribute of the derivation.  For example:
+
+```nix
+{ pkgs ? import <nixpkgs> { }
+}:
+
+let
+  zxcvbn-hs = import ../default.nix { inherit pkgs; };
+
+in pkgs.mkShell {
+  buildInputs = with pkgs; [
+    zxcvbn-hs.bin
+  ];
+}
+```
+
+This file creates a shell environment that includes the binaries from
+the `zxcvbn-hs` package, which is using the `nix-hs` function in
+`../default.nix`.
 
 [haskell]: https://www.haskell.org/
 [nixpkgs]: https://nixos.org/nix/
