@@ -56,27 +56,28 @@ let
   cabalNix = import ./nix/cabal2nix.nix { inherit pkgs cabal flags; };
 
   # The actual derivation for the package:
-  drv = lib.benchmark
-          (lib.appendBuildInputs buildInputs
-            (lib.overrideSrc (dirOf (toString cabal))
-              (haskell.callPackage (toString cabalNix) { })));
+  drvSansAdditions =
+    lib.benchmark
+      (lib.appendBuildInputs buildInputs
+        (lib.overrideSrc (dirOf (toString cabal))
+          (haskell.callPackage (toString cabalNix) { })));
 
-  # An environment that includes common development tools such as
-  # `cabal-install' and `hlint'.
-  env = drv.env.overrideAttrs (orig: {
-    passthru = orig.passthru or {} // {
-      # Expose this package's executables if requested:
-      bin = hlib.justStaticExecutables drv;
+  drv = drvSansAdditions.overrideAttrs (_orig: {
+    passthru = _orig.passthru or {} // {
+      # Expose static binaries if requested:
+      bin = hlib.justStaticExecutables drvSansAdditions;
+
+      # An environment that includes common development tools such as
+      # `cabal-install' and `hlint'.
+      interactive = drvSansAdditions.env.overrideAttrs (orig: {
+        buildInputs = orig.buildInputs ++
+          (with haskell; [
+            cabal-install
+            hlint
+            hasktags
+          ]);
+      });
     };
-
-    buildInputs = orig.buildInputs ++
-      (with haskell; [
-        cabal-install
-        hlint
-        hasktags
-      ]);
   });
 
-in if inNixShell
-   then env
-   else drv
+in drv
