@@ -1,40 +1,70 @@
-# Haskell + nixpkgs = nix-hs
+Haskell + nixpkgs = nix-hs
+==========================
 
 Are you a [Haskell][] programmer?  Do you use [nixpkgs][]?  Want to
 make using those two together really simple?  You're in luck.
 
-This project provides a set of Nix files and a tool called `nix-hs`
-that makes working with Haskell projects very simple.  For starters,
-Nix files are automatically generated and updated as needed.  Other
-features include:
+This project provides a set of Nix files that makes working with
+Haskell projects very simple.  For starters, Nix files are
+automatically generated and updated as needed.  Other features
+include:
 
-  * Works with both `cabal` and `stack`
-  * Build with profiling using a command line option
+  * Your package will build with `nix-build`
+  * Interactive development via `nix-shell` and `cabal`
   * Easily use any version of GHC in `nixpkgs`
-  * Interactive development and package generation
+  * Works with `Daren`
 
-## Installing nix-hs
+Geting Started
+--------------
 
-Coming soon...
+Create a `default.nix` file that looks something like this:
 
-Hint: Install it as an [overlay] [].
+```nix
+{ pkgs ? import <nixpkgs> {} }:
 
-## Interactive Development
+let
+  nix-hs = import "${fetchGit "https://github.com/pjones/nix-hs.git"}" {inherit pkgs;};
 
-Coming soon...
+in nix-hs {
+  cabal = ./mypackage.cabal;
+}
 
-Hint: `$ nix-hs -h`
+```
 
-## Making a Private Package for nixpkgs
+That's it!  Now `nix-build` and `nix-shell` just work!
 
-Coming soon...
+Configuration
+-------------
 
-## Other Things You Should Know
+In addition to the `cabal` argument to the `nix-hs` function, there
+are other ways to control how your package is built.
 
-  * In order to be idempotent, `nix-hs` runs `cabal` without a
-    configuration file (usually `~/.cabal/config`).  This also keeps
-    `cabal` from downloading packages from hackage.
+### Enable Flags from the Cabal File ###
+
+If you have a flag defined in your package's cabal file you can enable
+that using the `flags` argument:
+
+```nix
+nix-hs {
+  cabal = ./mypackage.cabal;
+  flags = [ "someflagname" ];
+}
+```
+
+### Using a Broken Package ###
+
+If one of your package's dependencies can't be built you can try
+overriding it:
+
+```nix
+nix-hs {
+  cabal = ./mypackage.cabal;
+
+  overrides = lib: self: super: with lib; {
+    pipes-text = unBreak (dontCheck (doJailbreak super.pipes-text));
+  };
+}
+```
 
 [haskell]: https://www.haskell.org/
 [nixpkgs]: https://nixos.org/nix/
-[overlay]: https://nixos.org/nixpkgs/manual/#chap-overlays
