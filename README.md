@@ -12,7 +12,7 @@ include:
   * Your package will build with `nix-build`
   * Interactive development via `nix-shell` and `cabal`
   * Easily use any version of GHC in `nixpkgs`
-  * Works with `Daren`
+  * Works with [direnv][]
 
 Geting Started
 --------------
@@ -43,7 +43,7 @@ are other ways to control how your package is built.
 ### Enable Flags from the Cabal File ###
 
 If you have a flag defined in your package's cabal file you can enable
-that using the `flags` argument:
+it using the `flags` argument:
 
 ```nix
 nix-hs {
@@ -67,5 +67,21 @@ nix-hs {
 }
 ```
 
+Integrating Your Text Editor and Shell
+--------------------------------------
+
+The best way to let your text editor and shell use the environment
+created from Nix is to use [direnv][].  Here's an example `.envrc`
+file:
+
+```sh
+# -*- sh -*-
+
+# Load an environment from Nix:
+use nix
+```
+
+
 [haskell]: https://www.haskell.org/
 [nixpkgs]: https://nixos.org/nix/
+[direnv]: https://github.com/direnv/direnv
