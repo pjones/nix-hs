@@ -24,8 +24,12 @@ Create a `default.nix` file that looks something like this:
 }:
 
 let
-  nix-hs-url = "https://github.com/pjones/nix-hs.git";
-  nix-hs = import "${fetchGit nix-hs-url}/default.nix" {inherit pkgs;};
+  nix-hs-src = fetchGit {
+    url = "https://github.com/pjones/nix-hs.git";
+    rev = "2003332a1e8e518b54e6143f9a9467a8a05abca4";
+  };
+
+  nix-hs = import "${nix-hs-src}/default.nix" { inherit pkgs; };
 
 in nix-hs {
   cabal = ./mypackage.cabal;
