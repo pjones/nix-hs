@@ -20,15 +20,16 @@ Geting Started
 Create a `default.nix` file that looks something like this:
 
 ```nix
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}
+}:
 
 let
-  nix-hs = import "${fetchGit "https://github.com/pjones/nix-hs.git"}" {inherit pkgs;};
+  nix-hs-url = "https://github.com/pjones/nix-hs.git";
+  nix-hs = import "${fetchGit nix-hs-url}/default.nix" {inherit pkgs;};
 
 in nix-hs {
   cabal = ./mypackage.cabal;
 }
-
 ```
 
 That's it!  Now `nix-build` and `nix-shell` just work!
