@@ -33,11 +33,18 @@ with pkgs.lib;
 
 let
 
+  # The final package set after modifying Haskell packages:
+  pkgs_ = pkgs // {
+    haskellPackages = haskell;
+  };
+
   # Some library functions:
-  lib = import ./nix/lib.nix { inherit pkgs; };
+  lib = import ./nix/lib.nix { pkgs = pkgs_; };
 
   # Modified version of the nixpkgs Haskell lib:
-  hlib = pkgs.haskell.lib // { inherit (lib) unBreak; };
+  hlib = pkgs.haskell.lib // {
+    inherit (lib) unBreak fetchGit;
+  };
 
   # The base package set we are going to override:
   packageSet =

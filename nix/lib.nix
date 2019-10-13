@@ -55,4 +55,9 @@ in rec {
       patches = [ ];
     });
 
+  # Fetch a dependency from Git and provide it with the updated
+  # package set.
+  fetchGit = args:
+    let src = builtins.fetchGit args;
+    in import "${src}/default.nix" { inherit pkgs; };
 }
