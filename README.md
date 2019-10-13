@@ -90,6 +90,9 @@ file:
 
 # Load an environment from Nix:
 use nix
+
+# Reload if these files change:
+watch_file mypackage.cabal
 ```
 
 **NOTE:** Make sure you have a `shell.nix` file that exposes the
