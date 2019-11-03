@@ -55,6 +55,18 @@ in rec {
       patches = [ ];
     });
 
+  # Add data files to `drv` by running `f` and giving it the path to
+  # where data files will be stored.  It should return a shell
+  # fragment.
+  addDataFiles = hpkgs: f: drv: with pkgs.haskell.lib;
+    let gname = hpkgs.ghc.name;
+        gsystem = hpkgs.ghc.system;
+        go = overrideCabal drv (orig: {
+          postInstall = (orig.postInstall or "") +
+          f "$data/share/${gname}/${gsystem}-${gname}/${drv.name}";
+        });
+    in if f != null then go else drv;
+
   # Fetch a dependency from Git and provide it with the updated
   # package set.
   fetchGit = args:

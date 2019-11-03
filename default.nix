@@ -27,6 +27,22 @@ with pkgs.lib;
 , buildInputs ? []
 # ^ Extra nixpkgs packages that your Haskell package depend on.
 
+, addDataFiles ? null
+# ^ If not null, it should be a function that takes a path to the data
+# directory and returns shell code to install extra files.
+#
+# Note: The argument given to this function contains shell variables
+# so it can only be used in a shell snippet.
+#
+# Example:
+#
+#    addDataFiles = path: ''
+#      mkdir -p "${path}/www"
+#      for file in ${ui}/*.js; do
+#        install -m 0444 "$file" "${path}/www"
+#      done
+#    '';
+
 , compiler ? "default"
 # ^ A nixpkgs version string for GHC, or "default".
 }:
@@ -87,4 +103,4 @@ let
     };
   });
 
-in drv
+in lib.addDataFiles haskell addDataFiles drv
