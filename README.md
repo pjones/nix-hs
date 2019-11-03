@@ -26,7 +26,7 @@ Create a `default.nix` file that looks something like this:
 let
   nix-hs-src = fetchGit {
     url = "https://github.com/pjones/nix-hs.git";
-    rev = "2003332a1e8e518b54e6143f9a9467a8a05abca4";
+    rev = "445a8246236fd380eb3310853f271ee4aed7f3f4";
   };
 
   nix-hs = import "${nix-hs-src}/default.nix" { inherit pkgs; };
