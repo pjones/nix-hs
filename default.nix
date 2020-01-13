@@ -92,7 +92,10 @@ let
 
       # An environment that includes common development tools such as
       # `cabal-install' and `hlint'.
-      interactive = drvSansAdditions.env.overrideAttrs (orig: {
+      interactive = (haskell.shellFor {
+        withHoogle = true;
+        packages = p: [drvSansAdditions];
+      }).overrideAttrs (orig: {
         buildInputs = orig.buildInputs ++
           (with haskell; [
             cabal-install
