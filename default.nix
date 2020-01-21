@@ -13,8 +13,6 @@
 { pkgs ? import <nixpkgs> { }
 }:
 
-with pkgs.lib;
-
 { cabal
 # ^ Path to cabal file.
 
@@ -26,6 +24,12 @@ with pkgs.lib;
 
 , buildInputs ? []
 # ^ Extra nixpkgs packages that your Haskell package depend on.
+
+, enableFullyStaticExecutables ? false
+# ^ Whether or not to build completely static executables.
+#
+# Very experimental.  Often broken.  See:
+# https://github.com/nh2/static-haskell-nix
 
 , addDataFiles ? null
 # ^ If not null, it should be a function that takes a path to the data
@@ -49,41 +53,47 @@ with pkgs.lib;
 
 let
 
-  # The final package set after modifying Haskell packages:
-  pkgs_ = pkgs // {
-    haskellPackages = haskell;
-  };
+  # The package set to start with.
+  pkgs_ = if enableFullyStaticExecutables
+            then pkgs.pkgsMusl
+            else pkgs;
 
   # Some library functions:
-  lib = import ./nix/lib.nix { pkgs = pkgs_; };
+  lib = import ./nix/lib.nix { pkgs = pkgs_ // {haskellPackages = haskell;}; };
 
   # Modified version of the nixpkgs Haskell lib:
-  hlib = pkgs.haskell.lib // {
+  hlib = pkgs_.haskell.lib // {
     inherit (lib) unBreak fetchGit;
   };
 
   # The base package set we are going to override:
   packageSet =
     if compiler == "default"
-    then pkgs.haskellPackages
-    else pkgs.haskell.packages."ghc${compiler}";
+    then pkgs_.haskellPackages
+    else pkgs_.haskell.packages."ghc${compiler}";
 
   # The Haskell package environment after performing overrides:
   haskell = packageSet.override (orig: {
-    overrides = composeExtensions
+    overrides = pkgs_.lib.composeExtensions
                  (orig.overrides or (_: _: {}))
                  (overrides hlib);
   });
 
   # The output of cabal2nix;
-  cabalNix = import ./nix/cabal2nix.nix { inherit pkgs cabal flags; };
+  cabalNix = import ./nix/cabal2nix.nix {
+    inherit cabal flags;
+    pkgs = pkgs_;
+  };
 
   # The actual derivation for the package:
   drvSansAdditions =
     lib.benchmark
       (lib.appendBuildInputs buildInputs
         (lib.overrideSrc (dirOf (toString cabal))
-          (haskell.callPackage (toString cabalNix) { })));
+        (haskell.callPackage (toString cabalNix) {
+          mkDerivation = args: haskell.mkDerivation (args //
+          (if enableFullyStaticExecutables then lib.makeStatic else {}));
+        })));
 
   drv = drvSansAdditions.overrideAttrs (_orig: {
     passthru = _orig.passthru or {} // {
