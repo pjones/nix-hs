@@ -109,8 +109,9 @@ let
         buildInputs = orig.buildInputs ++
           (with haskell; [
             cabal-install
-            hlint
             hasktags
+            hlint
+            hoogle
           ]);
       });
     };
