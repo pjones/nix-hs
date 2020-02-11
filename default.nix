@@ -102,9 +102,8 @@ let
 
       # An environment that includes common development tools such as
       # `cabal-install' and `hlint'.
-      interactive = (haskell.shellFor {
+      interactive = (drvSansAdditions.envFunc {
         withHoogle = true;
-        packages = p: [drvSansAdditions];
       }).overrideAttrs (orig: {
         buildInputs = orig.buildInputs ++
           (with haskell; [
