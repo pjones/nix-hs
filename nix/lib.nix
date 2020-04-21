@@ -55,6 +55,15 @@ in rec {
       patches = [ ];
     });
 
+  # Add more commands to the `postPatch` phase:
+  addPostPatch = text: drv: with pkgs.haskell.lib;
+    overrideCabal drv (orig: {
+      postPatch = ''
+        ${orig.postPatch or ""}
+        ${text}
+      '';
+    });
+
   # Build a static executables.  This is an attribute set that should
   # be used with the Haskell version of mkDerivation to override the
   # target package.

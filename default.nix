@@ -25,6 +25,9 @@
 , buildInputs ? []
 # ^ Extra nixpkgs packages that your Haskell package depend on.
 
+, postPatch ? ""
+# ^ Shell fragment to run after the `patchPhase'.
+
 , enableFullyStaticExecutables ? false
 # ^ Whether or not to build completely static executables.
 #
@@ -63,14 +66,19 @@ let
 
   # Modified version of the nixpkgs Haskell lib:
   hlib = pkgs_.haskell.lib // {
-    inherit (lib) unBreak fetchGit;
+    inherit (lib) unBreak fetchGit addPostPatch;
+    inherit compilerName;
+    pkgs = pkgs_;
   };
 
-  # The base package set we are going to override:
-  packageSet =
+  # Calculate the name of the compiler we're going to use.
+  compilerName =
     if compiler == "default"
-    then pkgs_.haskellPackages
-    else pkgs_.haskell.packages."ghc${compiler}";
+    then builtins.replaceStrings ["." "-"] ["" ""] pkgs_.haskellPackages.ghc.name
+    else "ghc${compiler}";
+
+  # The base package set we are going to override:
+  packageSet = pkgs_.haskell.packages."${compilerName}";
 
   # The Haskell package environment after performing overrides:
   haskell = packageSet.override (orig: {
@@ -87,13 +95,14 @@ let
 
   # The actual derivation for the package:
   drvSansAdditions =
-    lib.benchmark
-      (lib.appendBuildInputs buildInputs
-        (lib.overrideSrc (dirOf (toString cabal))
-        (haskell.callPackage (toString cabalNix) {
-          mkDerivation = args: haskell.mkDerivation (args //
-          (if enableFullyStaticExecutables then lib.makeStatic else {}));
-        })));
+    hlib.addPostPatch postPatch (
+      lib.benchmark
+        (lib.appendBuildInputs buildInputs
+          (lib.overrideSrc (dirOf (toString cabal))
+          (haskell.callPackage (toString cabalNix) {
+            mkDerivation = args: haskell.mkDerivation (args //
+            (if enableFullyStaticExecutables then lib.makeStatic else {}));
+          }))));
 
   drv = drvSansAdditions.overrideAttrs (_orig: {
     passthru = _orig.passthru or {} // {
@@ -108,9 +117,11 @@ let
         buildInputs = orig.buildInputs ++
           (with haskell; [
             cabal-install
+            ghcide
             hasktags
             hlint
             hoogle
+            ormolu
           ]);
       });
     };
