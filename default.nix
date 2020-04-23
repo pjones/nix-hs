@@ -13,45 +13,54 @@
 { pkgs ? import <nixpkgs> { }
 }:
 
-{ cabal
-# ^ Path to cabal file.
+{
+  # Path to one or more Cabal files.  May be a single path or an attr
+  # set of package names and paths to cabal files:
+  cabal,
 
-, flags ? []
-# ^ Cabal `-f' flags to use.
+  # Cabal `-f' flags to use:
+  flags ? [],
 
-, overrides ? (lib: self: super: {})
-# ^ Override `haskellPackages'.
+  # Optional: Override `haskellPackages' with a function.  The
+  # function takes three arguments and returns a new package set.
+  #
+  # The arguments are:
+  #
+  # 1. `pkgs.haskell.lib` with some additions.
+  # 2. `self`: The package set you are currently building.
+  # 3. `super`: The existing Haskell package set.
+  overrides ? (lib: self: super: {}),
 
-, buildInputs ? []
-# ^ Extra nixpkgs packages that your Haskell package depend on.
+  # Extra nixpkgs packages that your Haskell package depend on:
+  buildInputs ? [],
 
-, postPatch ? ""
-# ^ Shell fragment to run after the `patchPhase'.
+  # Shell fragment to run after the `patchPhase':
+  postPatch ? "",
 
-, enableFullyStaticExecutables ? false
-# ^ Whether or not to build completely static executables.
-#
-# Very experimental.  Often broken.  See:
-# https://github.com/nh2/static-haskell-nix
+  # Whether or not to build completely static executables.
+  #
+  # Very experimental.  Often broken.  See:
+  # https://github.com/nh2/static-haskell-nix
+  enableFullyStaticExecutables ? false,
 
-, addDataFiles ? null
-# ^ If not null, it should be a function that takes a path to the data
-# directory and returns shell code to install extra files.
-#
-# Note: The argument given to this function contains shell variables
-# so it can only be used in a shell snippet.
-#
-# Example:
-#
-#    addDataFiles = path: ''
-#      mkdir -p "${path}/www"
-#      for file in ${ui}/*.js; do
-#        install -m 0444 "$file" "${path}/www"
-#      done
-#    '';
+  # If not null, it should be a function that takes a path to the data
+  # directory and returns shell code to install extra files.
+  #
+  # Note: The argument given to this function contains shell variables
+  # so it can only be used in a shell snippet.
+  #
+  # Example:
+  #
+  #    addDataFiles = path: ''
+  #      mkdir -p "${path}/www"
+  #      for file in ${ui}/*.js; do
+  #        install -m 0444 "$file" "${path}/www"
+  #      done
+  #    '';
+  addDataFiles ? null,
 
-, compiler ? "default"
-# ^ A nixpkgs version string for GHC, or "default".
+  # A nixpkgs version string for GHC, or "default":
+  compiler ? "default"
 }:
 
 let
@@ -88,43 +97,65 @@ let
   });
 
   # The output of cabal2nix;
-  cabalNix = import ./nix/cabal2nix.nix {
-    inherit cabal flags;
-    pkgs = pkgs_;
-  };
+  cabalNix = cabal:
+    import ./nix/cabal2nix.nix {
+      inherit cabal flags;
+      pkgs = pkgs_;
+    };
 
   # The actual derivation for the package:
-  drvSansAdditions =
-    hlib.addPostPatch postPatch (
-      lib.benchmark
-        (lib.appendBuildInputs buildInputs
-          (lib.overrideSrc (dirOf (toString cabal))
-          (haskell.callPackage (toString cabalNix) {
-            mkDerivation = args: haskell.mkDerivation (args //
-            (if enableFullyStaticExecutables then lib.makeStatic else {}));
-          }))));
+  drvSansAdditions = cabalFile: haskell:
+    lib.addDataFiles haskell addDataFiles
+      (lib.addPostPatch postPatch (
+        lib.benchmark
+          (lib.appendBuildInputs buildInputs
+            (lib.overrideSrc (dirOf (toString cabalFile))
+            (haskell.callPackage (toString (cabalNix cabalFile)) {
+              mkDerivation = args: haskell.mkDerivation (args //
+              (if enableFullyStaticExecutables then lib.makeStatic else {}));
+            })))));
 
-  drv = drvSansAdditions.overrideAttrs (_orig: {
-    passthru = _orig.passthru or {} // {
-      # Expose static binaries if requested:
-      bin = hlib.justStaticExecutables drvSansAdditions;
+  # When we have a single cabal file:
+  singlePackage = file:
+    let drv = drvSansAdditions file haskell;
+    in drv.overrideAttrs (_orig: {
+        passthru = _orig.passthru or {} // {
+          # Expose static binaries if requested:
+          bin = hlib.justStaticExecutables drv;
+          interactive = import ./nix/interactive.nix {
+            inherit haskell buildInputs;
+            packages = [drv];
+          };
+        };
+    });
 
-      # An environment that includes common development tools such as
-      # `cabal-install' and `hlint'.
-      interactive = (drvSansAdditions.envFunc {
-        withHoogle = true;
-      }).overrideAttrs (orig: {
-        buildInputs = orig.buildInputs ++
-          (with haskell; [
-            cabal-install
-            ghcide
-            hasktags
-            hlint
-            hoogle
-            ormolu
-          ]);
+  # When we have more than one cabal file:
+  multiPackage = fileSet: with pkgs_.lib;
+  let # fileSet is a attr set where the keys are names of packages and
+      # the values are paths to cabal files.  Step one is to turn
+      # those keys into actual derivations.
+      packages = haskell: mapAttrs
+        (_: val: drvSansAdditions val haskell)
+        fileSet;
+      # We also need a Haskell environment where all of those packages
+      # are listed so they can refer to one another.
+      haskellExtra = haskell.override (orig: {
+        overrides = composeExtensions
+          (orig.overrides or (_: _: {}))
+          (self: _: packages self);
       });
+      # Then build an interactive environment that includes all of
+      # those packages and their dependencies.
+      interactive =
+        import ./nix/interactive.nix {
+          inherit buildInputs;
+          haskell = haskellExtra;
+          packages = attrValues (packages haskellExtra);
+        };
+    in packages haskellExtra // {
+      inherit interactive;
     };
-  });
 
-in lib.addDataFiles haskell addDataFiles drv
+in
+  if builtins.isAttrs cabal then multiPackage cabal
+  else singlePackage cabal
