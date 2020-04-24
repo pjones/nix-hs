@@ -24,6 +24,8 @@ let
     );
 
 in rec {
+  # Re-export nixpkgs:
+  inherit pkgs;
 
   # A source cleaner for Haskell programs:
   cleanSource = src:

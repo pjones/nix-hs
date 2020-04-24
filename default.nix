@@ -71,13 +71,21 @@ let
             else pkgs;
 
   # Some library functions:
-  lib = import ./nix/lib.nix { pkgs = pkgs_ // {haskellPackages = haskell;}; };
+  lib = import ./nix/lib.nix {
+    pkgs = pkgs_ // {
+      haskellPackages = haskell;
+      haskell = pkgs_.haskell // {
+        packages = pkgs_.haskell.packages // {
+          "${compilerName}" = haskell;
+        };
+      };
+    };
+  };
 
   # Modified version of the nixpkgs Haskell lib:
   hlib = pkgs_.haskell.lib // {
-    inherit (lib) unBreak fetchGit addPostPatch;
+    inherit (lib) pkgs unBreak fetchGit addPostPatch;
     inherit compilerName;
-    pkgs = pkgs_;
   };
 
   # Calculate the name of the compiler we're going to use.
