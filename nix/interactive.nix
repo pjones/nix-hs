@@ -22,5 +22,6 @@ haskell.shellFor {
         hlint
         hoogle
         ormolu
+        stack
       ]);
 }
