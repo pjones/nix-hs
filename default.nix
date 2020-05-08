@@ -132,6 +132,7 @@ let
           bin = hlib.justStaticExecutables drv;
           interactive = import ./nix/interactive.nix {
             inherit haskell buildInputs;
+            pkgs = pkgs_;
             packages = [drv];
           };
         };

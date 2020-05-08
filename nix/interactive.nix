@@ -6,6 +6,9 @@
   # set (a list of packages):
   packages,
 
+  # nixpkgs:
+  pkgs,
+
   # Additional build inputs to put into environment:
   buildInputs ? [ ]
 }:
@@ -15,6 +18,7 @@ haskell.shellFor {
   withHoogle = true;
   buildInputs =
     buildInputs
+    ++ [pkgs.stack]
     ++ (with haskell;
       [ cabal-install
         ghcide
@@ -22,6 +26,5 @@ haskell.shellFor {
         hlint
         hoogle
         ormolu
-        stack
       ]);
 }
