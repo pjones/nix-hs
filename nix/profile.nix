@@ -1,5 +1,3 @@
-################################################################################
-#
 # This file is part of the package nix-hs. It is subject to the license
 # terms in the LICENSE file found in the top-level directory of this
 # distribution and at:
@@ -17,17 +15,17 @@
 
 let
   # Select a compiler:
-  basePackages =
-    if compiler == "default"
-      then pkgs.haskellPackages
-      else pkgs.haskell.packages."ghc${compiler}";
+  basePackages = if compiler == "default" then
+    pkgs.haskellPackages
+  else
+    pkgs.haskell.packages."ghc${compiler}";
 
 in pkgs.mkShell {
   buildInputs = [
     basePackages.ghc # For hp2ps
     basePackages.ghc-prof-aeson-flamegraph
     pkgs.ghostscript # For ps2pdf
-    pkgs.flamegraph  # For flamegraph.pl
+    pkgs.flamegraph # For flamegraph.pl
   ];
 
   shellHook = ''
