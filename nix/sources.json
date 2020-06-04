@@ -1,0 +1,98 @@
+{
+    "ghc-check-0.3.0.1": {
+        "branch": "v0.3.0.1",
+        "description": "utility to detect mismatches of ghc api versions",
+        "homepage": null,
+        "owner": "pepeiborra",
+        "repo": "ghc-check",
+        "rev": "ed5428f089e061d2dc8282f9ab75110404ccd4d7",
+        "sha256": "13jb7p1464mpf0163cmxydn5r8z1qfm3izdihn76m4bhh1aim8fl",
+        "type": "tarball",
+        "url": "https://github.com/pepeiborra/ghc-check/archive/ed5428f089e061d2dc8282f9ab75110404ccd4d7.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "ghcide": {
+        "branch": "v0.2.0",
+        "description": "A library for building Haskell IDE tooling",
+        "homepage": "",
+        "owner": "digital-asset",
+        "repo": "ghcide",
+        "rev": "4149ab539d736328e29957c7eee752e0413fdd40",
+        "sha256": "1d5jpff480p9i2fypxp9cmjjbivi1fy1lw3xhimq7iizwywdnsxv",
+        "type": "tarball",
+        "url": "https://github.com/digital-asset/ghcide/archive/4149ab539d736328e29957c7eee752e0413fdd40.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "haskell-lsp": {
+        "branch": "0.22.0.0",
+        "description": "Haskell library for the Microsoft Language Server Protocol",
+        "homepage": null,
+        "owner": "alanz",
+        "repo": "haskell-lsp",
+        "rev": "2ff11293fc55cb59a095918d4193a748bb78078f",
+        "sha256": "1qsc3rs18mb0sa3f9q639pw7mfbssdm3jwwd8q0c7jb049g7rmxw",
+        "type": "tarball",
+        "url": "https://github.com/alanz/haskell-lsp/archive/2ff11293fc55cb59a095918d4193a748bb78078f.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "hie-bios": {
+        "branch": "0.5.0",
+        "description": null,
+        "homepage": null,
+        "owner": "mpickering",
+        "repo": "hie-bios",
+        "rev": "0044432e6eebce151a0cb0003ee5e40a8a17cd25",
+        "sha256": "1rpxaa2brd5b900ngyc2g47dzblqi617s03581mbly034gnjybc0",
+        "type": "tarball",
+        "url": "https://github.com/mpickering/hie-bios/archive/0044432e6eebce151a0cb0003ee5e40a8a17cd25.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "lsp-test": {
+        "branch": "0.11.0.1",
+        "description": "A functional test framework for LSP servers",
+        "homepage": null,
+        "owner": "bubba",
+        "repo": "lsp-test",
+        "rev": "a7fd35b1582f9816d8caa90a7b2e3aa765fb0446",
+        "sha256": "1wdnv4fyqxpvija9dxi2yqaz5r9b5ddi8cp80i9ymfjbv2xk1j0m",
+        "type": "tarball",
+        "url": "https://github.com/bubba/lsp-test/archive/a7fd35b1582f9816d8caa90a7b2e3aa765fb0446.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "f73bf8d584148677b01859677a63191c31911eae",
+        "sha256": "0jlmrx633jvqrqlyhlzpvdrnim128gc81q5psz2lpp2af8p8q9qs",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/f73bf8d584148677b01859677a63191c31911eae.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixpkgs-unstable",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "1ae28ebfdb7e7d48f003881967db67c156724912",
+        "sha256": "1qqzxaf0nfsg8zdgr5kghih4pr46q5acbnpzihnsdiiykz4xvs3f",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/1ae28ebfdb7e7d48f003881967db67c156724912.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "ormolu": {
+        "branch": "0.1.0.0",
+        "description": "A formatter for Haskell source code",
+        "homepage": null,
+        "owner": "tweag",
+        "repo": "ormolu",
+        "rev": "409c1f9aa8064ffc89aa8d047181ffee95e4fc46",
+        "sha256": "0j26r42nw854wn9zyn1dm1h87rjdjwfdyncjgp8fj1q19hnz99gw",
+        "type": "tarball",
+        "url": "https://github.com/tweag/ormolu/archive/409c1f9aa8064ffc89aa8d047181ffee95e4fc46.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

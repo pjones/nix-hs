@@ -126,7 +126,7 @@ let
         # Expose static binaries if requested:
         bin = hlib.justStaticExecutables drv;
         interactive = import ./nix/interactive.nix {
-          inherit haskell buildInputs;
+          inherit haskell buildInputs compilerName;
           pkgs = pkgs_;
           packages = [ drv ];
         };
@@ -150,7 +150,7 @@ let
       # Then build an interactive environment that includes all of
       # those packages and their dependencies.
       interactive = import ./nix/interactive.nix {
-        inherit buildInputs;
+        inherit buildInputs compilerName;
         pkgs = pkgs_;
         haskell = haskellExtra;
         packages = attrValues (packages haskellExtra);

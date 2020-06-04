@@ -6,5 +6,5 @@ build-type:          Simple
 
 executable test
   main-is:             Main.hs
-  build-depends:       base
+  build-depends:       base, aeson
   default-language:    Haskell2010

@@ -1,6 +1,11 @@
 # An interactive development environment.
-{ # The Haskell package set with overrides:
+{
+
+# The Haskell package set with overrides:
 haskell,
+
+# The version of GHC we are using:
+compilerName,
 
 # The Haskell packages whose dependencies need to be in the package
 # set (a list of packages):
@@ -12,9 +17,9 @@ pkgs,
 # Additional build inputs to put into environment:
 buildInputs ? [ ] }:
 
-haskell.shellFor {
+let tools = import ../shell/shell.nix { ghc = compilerName; };
+in haskell.shellFor {
   packages = _: packages;
   withHoogle = true;
-  buildInputs = buildInputs ++ [ pkgs.stack ]
-    ++ (with haskell; [ cabal-install ghcide hasktags hlint hoogle ormolu ]);
+  buildInputs = buildInputs ++ tools.buildInputs;
 }
