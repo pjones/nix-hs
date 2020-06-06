@@ -9,12 +9,12 @@ A thin layer over the existing [Haskell][] infrastructure in
 development.  Here are some of the features that you might find the
 most useful:
 
-  * Interactive development environment (via `nix-shell`) that
+  * An interactive development environment (via `nix-shell`) that
     includes `cabal`, `stack`, `ghcide`, `ormolu`, a Hoogle database,
     etc.
 
   * Easy to use system for [overriding Haskell
-    packages](#using-a-broken-package) (i.e. use a package not on
+    packages](#using-a-broken-package) (e.g., use a package not on
     Hackage, fix a package marked as broken, etc.) without having to
     write tons of Nix code.
 
@@ -32,8 +32,8 @@ most useful:
     require any system libraries or the nix store.
 
   * Create an interactive development environment [without adding
-    nix-hs](#interactive-environments-without-nix-hs) as a dependency
-    of your project.
+    nix-hs](#interactive-environments-without-nix-hs) as a project
+    dependency.
 
   * Fetch pre-built tools from [the binary cache](#using-the-binary-cache).
 
@@ -102,7 +102,7 @@ In the example above, the `overrides` function takes three arguments:
      few more that you might find useful such as:
 
      - `unBreak`: Remove the `broken` flag from a package
-     - `compilerName`: The `nixpkgs` name of the Haskell compiler
+     - `compilerName`: The nixpkgs name of the Haskell compiler
        being used (e.g. `ghc883`)
      - `pkgs`: The full package set, after overriding
 
@@ -198,14 +198,14 @@ following in `docker.nix`:
 }:
 
 let
-  zxcvbn-ws = (import ./. { inherit pkgs; }).bin;
+  mypackage = (import ./. { inherit pkgs; }).bin;
 
 in pkgs.dockerTools.buildImage {
-  name = "zxcvbn-ws";
+  name = "mypackage";
   tag  = "latest";
 
   config = {
-    Cmd = [ "${zxcvbn-ws}/bin/zxcvbn-ws" ];
+    Cmd = [ "${mypackage}/bin/hello" ];
   };
 }
 ```
@@ -230,11 +230,11 @@ in mind:
   * As of June 5, 2020 [a patch](https://github.com/NixOS/nixpkgs/issues/85924)
     needs to be applied to nixpkgs so that we can bootstrap a
     statically compiled GHC.  `nix-hs` will automatically apply this
-    patch to the `nixpkgs` set that you give it.
+    patch to the nixpkgs set that you give it.
 
 With that out of the way, let's talk about how to actually build a
 static binary.  Most of the work has already been done for you and
-it's likely that all you need to do is set the
+it's likely that all you'll need to do is set the
 `enableFullyStaticExecutables` argument to `true` when calling the
 `nix-hs` function.
 
