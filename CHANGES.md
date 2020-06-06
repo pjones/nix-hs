@@ -1,8 +1,8 @@
 # Release History
 
-## [NEXT] - ????-??-??
+## [2.0] - 2020-06-06
 
-  * Automatically build the correct versions of `ghcide` and `ormolu`
+  * Automatically build the latest versions of `ghcide` and `ormolu`
     instead of using the ones in `pkgs.haskellPackages`.
 
   * Added files for `nix-shell` that can be used with `direnv` to load
@@ -18,6 +18,11 @@
 
   * Build fully static binaries (via [static-haskell-nix][]) by
     setting `enableFullyStaticExecutables` to `true`.
+
+  * Created a binary cache via Cachix to store dynamically and
+    statically linked compilers and tools.
+
+  * Added tests and configured GitHub actions
 
 [static-haskell-nix]: https://github.com/nh2/static-haskell-nix
 
