@@ -16,6 +16,11 @@
     use nix /path/to/nix-hs/shell/shell-ghc865.nix
     ```
 
+  * Build fully static binaries (via [static-haskell-nix][]) by
+    setting `enableFullyStaticExecutables` to `true`.
+
+[static-haskell-nix]: https://github.com/nh2/static-haskell-nix
+
 ## [1.0] - 2019-09-12
 
   * Initial release

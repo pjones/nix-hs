@@ -61,25 +61,6 @@ in rec {
       '';
     });
 
-  # Build a static executables.  This is an attribute set that should
-  # be used with the Haskell version of mkDerivation to override the
-  # target package.
-  makeStatic = {
-    enableSharedExecutables = false;
-    enableSharedLibraries = false;
-    enableStaticLibraries = true;
-
-    configureFlags = [
-      "--ghc-option=-optl=-static"
-      "--ghc-option=-optl=-pthread"
-      "--ghc-option=-optl=-L${pkgs.gmp6.override { withStatic = true; }}/lib"
-      "--ghc-option=-optl=-L${pkgs.zlib.static}/lib"
-      "--extra-lib-dirs=${
-        pkgs.libffi.overrideAttrs (old: { dontDisableStatic = true; })
-      }/lib"
-    ];
-  };
-
   # Add data files to `drv` by running `f` and giving it the path to
   # where data files will be stored.  It should return a shell
   # fragment.
@@ -93,10 +74,4 @@ in rec {
           + f "$data/share/${gname}/${gsystem}-${gname}/${drv.name}";
       });
     in if f != null then go else drv;
-
-  # Fetch a dependency from Git and provide it with the updated
-  # package set.
-  fetchGit = args:
-    let src = builtins.fetchGit args;
-    in import "${src}/default.nix" { inherit pkgs; };
 }

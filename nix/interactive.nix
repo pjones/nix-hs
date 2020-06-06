@@ -1,25 +1,35 @@
 # An interactive development environment.
 {
 
-# The Haskell package set with overrides:
-haskell,
-
-# The version of GHC we are using:
-compilerName,
-
-# The Haskell packages whose dependencies need to be in the package
-# set (a list of packages):
-packages,
-
 # nixpkgs:
 pkgs,
 
-# Additional build inputs to put into environment:
+# The version of GHC we are using.
+compilerName,
+
+# The derivation to add an interactive environment to.  If instead of
+# a derivation an attribute set is given, create an interactive
+# environment for all packages in the set.
+drv,
+
+# Additional build inputs to put into environment.
 buildInputs ? [ ] }:
 
-let tools = import ../shell/shell.nix { ghc = compilerName; };
-in haskell.shellFor {
-  packages = _: packages;
-  withHoogle = true;
-  buildInputs = buildInputs ++ tools.buildInputs;
-}
+let
+  tools = import ../shell/shell.nix { ghc = compilerName; };
+
+  shellFor = packages:
+    pkgs.haskell.packages.${compilerName}.shellFor {
+      packages = _: packages;
+      withHoogle = true;
+      buildInputs = buildInputs ++ tools.buildInputs;
+    };
+
+in if pkgs.lib.isDerivation drv
+
+then
+  drv.overrideAttrs (orig: {
+    passthru = orig.passthru or { } // { interactive = shellFor [ drv ]; };
+  })
+else
+  drv // { interactive = shellFor (builtins.attrValues drv); }

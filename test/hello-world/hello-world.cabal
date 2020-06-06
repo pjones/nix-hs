@@ -1,10 +1,10 @@
 cabal-version:       >=1.10
-name:                test
+name:                hello-world
 version:             0.1.0.0
 license-file:        /dev/null
 build-type:          Simple
 
-executable test
+executable hello-world
   main-is:             Main.hs
   build-depends:       base, aeson
   default-language:    Haskell2010

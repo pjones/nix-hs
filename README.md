@@ -1,21 +1,33 @@
-Haskell + nixpkgs = nix-hs
-==========================
+# Haskell + nixpkgs = nix-hs
 
-Are you a [Haskell][] programmer?  Do you use [nixpkgs][]?  Want to
-make using those two together really simple?  You're in luck.
+A thin layer over the existing [Haskell][] infrastructure in
+[nixpkgs][] which adds all of the tools needed for interactive
+development.  Here are some of the features that you might find the
+most useful:
 
-This project provides a Nix file that makes working with
-Haskell projects very simple.  What does it do for you?  Well, here
-are just a few of the things you'll love:
+  * Interactive development environment (via `nix-shell`) that
+    includes `cabal`, `stack`, `ghcide`, `ormolu`, a Hoogle database,
+    etc.
 
-  * `cabal2nix` is automatically called when your Cabal file changes
-  * Your package can be built with `nix-build`
-  * Interactive development environment via `nix-shell`
-  * Easily use any version of GHC in `nixpkgs`
-  * Works with [direnv][]
+  * Easy to use system for [overriding Haskell
+    packages](#using-a-broken-package) (i.e. use a package not on
+    Hackage, fix a package marked as broken, etc.) without having to
+    write tons of Nix code.
 
-Geting Started
---------------
+  * Works seamlessly with [direnv][], [lorri][], and [niv][] if you
+    already have those tools installed.
+
+  * Switch GHC versions by passing an argument to `nix-build` or
+    `nix-shell`.
+
+  * [Strip dependencies](#access-to-binary-only-packages) from a
+    package so you can deploy just a binary without tons of other
+    packages coming along for the ride.
+
+  * Build [fully static binaries](#fully-static-binaries) that don't
+    require any system libraries or the nix store.
+
+## Geting Started
 
 Create a `default.nix` file that looks something like this:
 
@@ -24,15 +36,11 @@ Create a `default.nix` file that looks something like this:
 }:
 
 let
-  nix-hs-src = fetchGit {
-    url = "https://github.com/pjones/nix-hs.git";
-    rev = "445a8246236fd380eb3310853f271ee4aed7f3f4";
-  };
-
-  nix-hs = import "${nix-hs-src}/default.nix" { inherit pkgs; };
+  nix-hs =
+    import (fetchGit "https://github.com/pjones/nix-hs.git") { inherit pkgs; };
 
 in nix-hs {
-  cabal = ./mypackage.cabal;
+  cabal = ./test/hello-world/hello-world.cabal;
 }
 ```
 
@@ -45,13 +53,12 @@ And a `shell.nix` that looks like this:
 
 That's it!  Now `nix-build` and `nix-shell` just work!
 
-Configuration
--------------
+## Configuration
 
 In addition to the `cabal` argument to the `nix-hs` function, there
 are other ways to control how your package is built.
 
-### Enable Flags from the Cabal File ###
+### Enable Flags from the Cabal File
 
 If you have a flag defined in your package's cabal file you can enable
 it using the `flags` argument:
@@ -63,7 +70,7 @@ nix-hs {
 }
 ```
 
-### Using a Broken Package ###
+### Using a Broken Package
 
 If one of your package's dependencies can't be built you can try
 overriding it:
@@ -78,28 +85,53 @@ nix-hs {
 }
 ```
 
-Integrating Your Text Editor and Shell
---------------------------------------
+In the example above, the `overrides` function takes three arguments:
+
+  1. `lib`: An attribute set of library functions.  These are the
+     functions provided by the `pkgs.haskellPackages.lib` set plus a
+     few more that you might find useful such as:
+
+     - `unBreak`: Remove the `broken` flag from a package
+     - `compilerName`: The `nixpkgs` name of the Haskell compiler
+       being used (e.g. `ghc883`)
+     - `pkgs`: The full package set, after overriding
+
+  2. `self`: The final set of Haskell packages after applying all
+     overrides.  This refers to the future version of the package set
+     so if you're not careful you can fall into infinite recursion.
+     When in doubt use `super` instead.
+
+  3. `super`: The set of Haskell packages that are being modified.
+     Use this attribute set to refer to existing Haskell packages.
+     You can also use `super` to access useful functions such as
+     `callCabal2nix` and `callHackageDirect`.
+
+The `overrides` function should return an attribute set of Haskell
+packages.  The set of returned packages will be merged into the final
+set used to build your package.
+
+## Integrating Your Text Editor and Shell
 
 The best way to let your text editor and shell use the environment
 created from Nix is to use [direnv][].  Here's an example `.envrc`
 file:
 
 ```sh
-# -*- sh -*-
-
-# Load an environment from Nix:
-use nix
+# Use lorri if it's installed, otherwise load shell.nix:
+if has lorri; then
+  eval "$(lorri direnv)"
+else
+  use nix
+fi
 
 # Reload if these files change:
-watch_file mypackage.cabal
+watch_file $(find . -name '*.cabal' -o -name '*.nix')
 ```
 
 **NOTE:** Make sure you have a `shell.nix` file that exposes the
 `interactive` attribute of the derivation, like the example above.
 
-Access to Static Binaries
--------------------------
+## Access to Binary-Only Packages
 
 The derivation generated by the `nix-hs` function makes it easy to
 access a "binary only" derivation.  This is perfect for deployments or
@@ -107,7 +139,8 @@ Docker containers where you don't want to bring along all of your
 package's dependencies (including GHC).
 
 The `bin` attribute of the derivation gives you access to this binary
-only derivation.  For example, to create a docker container:
+only derivation.  For example, to create a docker container put the
+following in `docker.nix`:
 
 ```nix
 { pkgs ? import <nixpkgs> { }
@@ -126,6 +159,57 @@ in pkgs.dockerTools.buildImage {
 }
 ```
 
+## Fully Static Binaries
+
+It's possible to build fully static binaries using the
+[static-haskell-nix][] project.  Here are some things you should keep
+in mind:
+
+  * Every upstream dependency needs to be rebuilt so it links with
+    [musl][] instead of [glibc][], including GHC and its dependencies.
+    This can take a very long time so you might want to consider using
+    a binary cache as described over on the [static-haskell-nix][] repo.
+
+  * Ensuring that all packages in nixpkgs build with [musl][] is not a
+    priority and is sometimes broken.  You'll often need to pin
+    nixpkgs to a specific commit off master.  The best way to find a
+    working commit ID for nixpkgs is to see what's being used to build
+    the `survey` portion of [static-haskell-nix][].
+
+  * As of June 5, 2020 using GHC 8.6.5 is broken.  Using GHC 8.8.3
+    works but nixpkgs needs to be patched.  `nix-hs` will
+    automatically apply the patch.
+
+To build fully static binaries you need to set the
+`enableFullyStaticExecutables` argument to `true` when calling the
+`nix-hs` function.
+
+You may also need to link with static libraries created by the
+[static-haskell-nix][] project.  If your package fails to build due to
+missing static libraries use the `staticBuildInputs` argument to
+`nix-hs` to add more `buildInputs`.
+
+Here's a complete example:
+
+```nix
+{ pkgs ? import <nixpkgs> { } }:
+
+let
+  nix-hs =
+    import (fetchGit "https://github.com/pjones/nix-hs.git") { inherit pkgs; };
+
+in nix-hs {
+  cabal = ./test/hello-world/hello-world.cabal;
+  enableFullyStaticExecutables = true;
+  staticBuildInputs = static: with static; [ zlib_both ];
+}
+```
+
 [haskell]: https://www.haskell.org/
 [nixpkgs]: https://nixos.org/nix/
 [direnv]: https://github.com/direnv/direnv
+[lorri]: https://github.com/target/lorri
+[niv]: https://github.com/nmattia/niv
+[musl]: https://www.musl-libc.org/
+[glibc]: https://www.gnu.org/software/libc/
+[static-haskell-nix]: https://github.com/nh2/static-haskell-nix

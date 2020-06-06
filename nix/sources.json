@@ -94,5 +94,17 @@
         "type": "tarball",
         "url": "https://github.com/tweag/ormolu/archive/409c1f9aa8064ffc89aa8d047181ffee95e4fc46.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "static-haskell-nix": {
+        "branch": "master",
+        "description": "easily build most Haskell programs into fully static Linux executables",
+        "homepage": "",
+        "owner": "nh2",
+        "repo": "static-haskell-nix",
+        "rev": "dbce18f4808d27f6a51ce31585078b49c86bd2b5",
+        "sha256": "084hxnrywsgb73zr41argdkbhkxzm1rqn058pv1l4cp9g1gjr2rr",
+        "type": "tarball",
+        "url": "https://github.com/nh2/static-haskell-nix/archive/dbce18f4808d27f6a51ce31585078b49c86bd2b5.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
