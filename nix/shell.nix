@@ -1,7 +1,10 @@
 { sources ? import ../nix/sources.nix, pkgs ? import sources.nixpkgs { }
-, ghc ? "ghc883" }:
+, compiler ? "default" }:
 
 let
+  compilers = import ./compilers.nix { inherit pkgs; };
+  ghc = compilers.name compiler;
+
   ghcide = import ../nix/ghcide.nix { inherit sources pkgs ghc; };
   ormolu = import ../nix/ormolu.nix { inherit sources pkgs ghc; };
 

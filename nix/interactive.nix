@@ -16,7 +16,7 @@ drv,
 buildInputs ? [ ] }:
 
 let
-  tools = import ../shell/shell.nix { ghc = compilerName; };
+  tools = import ./shell.nix { compiler = compilerName; };
 
   shellFor = packages:
     pkgs.haskell.packages.${compilerName}.shellFor {

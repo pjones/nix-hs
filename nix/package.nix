@@ -68,20 +68,16 @@ addDataFiles ? null,
 compiler ? "default" }:
 
 let
+  # Helper functions for various compiler features.
+  compilers = import ./compilers.nix { pkgs = basepkgs; };
+
   # Some library functions:
   helpers = pkgs: import ./lib.nix { inherit pkgs; };
-
-  # Calculate the name of the compiler we're going to use.
-  compilerName = if compiler == "default" then
-    builtins.replaceStrings [ "." "-" ] [ "" "" ]
-    basepkgs.haskellPackages.ghc.name
-  else
-    "ghc${compiler}";
 
   # Create a derivation for the given cabal file.
   singlePackage = cabalFile: pkgs:
     let
-      haskell = pkgs.haskell.packages.${compilerName};
+      haskell = pkgs.haskell.packages.${compilers.name compiler};
       lib = helpers pkgs;
       cabalNix = cabal:
         import ./cabal2nix.nix {
@@ -110,14 +106,15 @@ let
     # Modified version of the nixpkgs Haskell lib:
     hlib = pkgs:
       pkgs.haskell.lib // {
-        inherit pkgs compilerName;
+        inherit pkgs;
         inherit (helpers pkgs) unBreak addPostPatch;
+        compilerName = compilers.name compiler;
       };
   in overrideFunc: self: super: {
     haskell = super.haskell // {
       packages = super.haskell.packages // {
-        ${compilerName} = super.haskell.packages.${compilerName}.override
-          (orig: {
+        ${compilers.name compiler} =
+          super.haskell.packages.${compilers.name compiler}.override (orig: {
             overrides =
               super.lib.composeExtensions (orig.overrides or (_: _: { }))
               (overrideFunc (hlib super));
@@ -173,8 +170,9 @@ let
           drv;
       makeInteractive = drv:
         import ./interactive.nix {
-          inherit drv compilerName buildInputs;
+          inherit drv buildInputs;
           pkgs = basepkgs;
+          compilerName = compilers.name compiler;
         };
     in if builtins.isList nameOrNames then
       makeInteractive (builtins.listToAttrs (map (name: {
@@ -193,15 +191,13 @@ in if enableFullyStaticExecutables then
       (import basepkgs-patched { inherit (basepkgs) config overlays; });
     static = import "${sources.static-haskell-nix}/survey" {
       normalPkgs = result.pkgs;
-      compiler = compilerName;
-      # FIXME: Can we get this from nixpkgs?
-      defaultCabalPackageVersionComingWithGhc = ({
-        ghc865 = "Cabal_2_4_1_0";
-        ghc883 = "Cabal_3_2_0_0";
-      }).${compilerName};
+      compiler = compilers.name compiler;
+      # FIXME: Can we get this from nixpkgs somehow?
+      defaultCabalPackageVersionComingWithGhc =
+        compilers.attrs.${compilers.name compiler}.cabal;
     };
   in extractPackages static.pkgs static.haskellPackages result.hask
 else
   let result = finalpkgs basepkgs;
-  in extractPackages result.pkgs result.pkgs.haskell.packages.${compilerName}
-  result.hask
+  in extractPackages result.pkgs
+  result.pkgs.haskell.packages.${compilers.name compiler} result.hask

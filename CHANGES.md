@@ -13,7 +13,7 @@
     To use one of these files put this line in an `.envrc` file:
 
     ```sh
-    use nix /path/to/nix-hs/shell/shell-ghc865.nix
+    use nix /path/to/nix-hs/nix/shell.nix
     ```
 
   * Build fully static binaries (via [static-haskell-nix][]) by
