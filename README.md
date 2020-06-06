@@ -1,5 +1,9 @@
 # Haskell + nixpkgs = nix-hs
 
+[![Test](https://github.com/pjones/nix-hs/workflows/Test/badge.svg)](https://github.com/pjones/nix-hs/actions)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/pjones/nix-hs?label=Release&logo=github)](https://github.com/pjones/nix-hs/releases)
+[![Cachix](https://img.shields.io/badge/Cachix-nix--hs-blue)](https://app.cachix.org/cache/nix-hs)
+
 A thin layer over the existing [Haskell][] infrastructure in
 [nixpkgs][] which adds all of the tools needed for interactive
 development.  Here are some of the features that you might find the
@@ -30,6 +34,8 @@ most useful:
   * Create an interactive development environment [without adding
     nix-hs](#interactive-environments-without-nix-hs) as a dependency
     of your project.
+
+  * Fetch pre-built tools from [the binary cache](#using-the-binary-cache).
 
 ## Geting Started
 
@@ -114,6 +120,21 @@ The `overrides` function should return an attribute set of Haskell
 packages.  The set of returned packages will be merged into the final
 set used to build your package.
 
+### Working with Multi-Package Cabal Projects
+
+If you have a project that contains multiple Cabal packages you can
+build them all with a single `default.nix`.  The `cabal` argument to
+`nix-hs` can either be a path to a Cabal file *or* an attribute set of
+Cabal files:
+
+```nix
+nix-hs {
+  cabal = {
+    package1 = ./package1/package1.cabal;
+    package2 = ./package1/package2.cabal;
+  };
+}
+```
 ## Integrating Your Text Editor and Shell
 
 The best way to let your text editor and shell use the environment
@@ -198,7 +219,7 @@ in mind:
   * Every upstream dependency needs to be rebuilt so it links with
     [musl][] instead of [glibc][], including GHC and its dependencies.
     This can take a very long time so you might want to consider using
-    a binary cache as described over on the [static-haskell-nix][] repo.
+    [the binary cache](#using-the-binary-cache).
 
   * Ensuring that all packages in nixpkgs build with [musl][] is not a
     priority and is sometimes broken.  You'll often need to pin
@@ -237,6 +258,17 @@ in nix-hs {
   staticBuildInputs = static: with static; [ zlib_both ];
 }
 ```
+
+## Using the Binary Cache
+
+If you don't want to spend all day compiling the tools needed to build
+your Haskell package and its development environment you can use the
+`nix-hs` cache [on Cachix](https://app.cachix.org/cache/nix-hs).
+
+The cache is populated after each `git push` via a [GitHub
+action](https://github.com/pjones/nix-hs/actions) and even includes
+the statically compiled versions of GHC needed for building [fully
+static binaries](#fully-static-binaries).
 
 [haskell]: https://www.haskell.org/
 [nixpkgs]: https://nixos.org/nix/
