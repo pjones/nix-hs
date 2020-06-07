@@ -1,6 +1,6 @@
 # Release History
 
-## [2.0] - 2020-06-06
+## [2.0] - 2020-06-07
 
   * Automatically build the latest versions of `ghcide` and `ormolu`
     instead of using the ones in `pkgs.haskellPackages`.

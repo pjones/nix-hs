@@ -1,8 +1,9 @@
 # Haskell + nixpkgs = nix-hs
 
-[![Test](https://github.com/pjones/nix-hs/workflows/Test/badge.svg)](https://github.com/pjones/nix-hs/actions)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/pjones/nix-hs?label=Release&logo=github)](https://github.com/pjones/nix-hs/releases)
-[![Cachix](https://img.shields.io/badge/Cachix-nix--hs-blue)](https://app.cachix.org/cache/nix-hs)
+[![dynamic-linking](https://github.com/pjones/nix-hs/workflows/dynamic-linking/badge.svg)](https://github.com/pjones/nix-hs/actions?query=workflow%3Adynamic-linking)
+[![static-linking](https://github.com/pjones/nix-hs/workflows/static-linking/badge.svg)](https://github.com/pjones/nix-hs/actions?query=workflow%3Astatic-linking)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/pjones/nix-hs?label=release)](https://github.com/pjones/nix-hs/releases)
+[![cachix](https://img.shields.io/badge/cachix-nix--hs-green)](https://app.cachix.org/cache/nix-hs)
 
 A thin layer over the existing [Haskell][] infrastructure in
 [nixpkgs][] which adds all of the tools needed for interactive

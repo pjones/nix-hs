@@ -44,10 +44,20 @@ run_test() {
 }
 
 ################################################################################
-for compiler in $(jq -r 'keys|join(" ")' "$top/../compilers.json"); do
-  run_test "$compiler" "dynamic"
-  run_test "$compiler" "static"
-done
+if [ $# -eq 0 ]; then
+  for compiler in $(jq -r 'keys|join(" ")' "$top/../compilers.json"); do
+    run_test "$compiler" "dynamic"
+    run_test "$compiler" "static"
+  done
+elif [ $# -eq 1 ]; then
+  run_test "$1" "dynamic"
+  run_test "$1" "static"
+elif [ $# -eq 2 ]; then
+  run_test "$1" "$2"
+else
+  echo >&2 "ERROR: invalid arguments"
+  exit 1
+fi
 
 # Local Variables:
 #   mode: sh

@@ -1,10 +1,15 @@
-name: "Test"
+name: dynamic-linking
 on:
   pull_request:
   push:
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        ghc: [ghc865, ghc883, ghc8101]
     steps:
     - uses: actions/checkout@v2
     - uses: cachix/install-nix-action@v10
@@ -14,4 +19,4 @@ jobs:
       with:
         name: nix-hs
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-    - run: test/test.sh
+    - run: test/test.sh '${{ matrix.ghc }}' dynamic
