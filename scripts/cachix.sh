@@ -32,6 +32,13 @@ cachix_push() {
     "${args[@]}" \
     "$top/test/hello-world/shell.nix" |
     cachix push nix-hs
+
+  # Ensure that GHC is cached so that GitHub actions don't run out of
+  # disk space while trying building it.  Primarily for the statically
+  # linked versions of GHC.
+  ghc=$(nix-shell "${args[@]}" "$top/test/hello-world/default.nix" --run "type -p ghc")
+  path=$(dirname "$(dirname "$ghc")")
+  cachix push nix-hs "$path"
 }
 
 ################################################################################
