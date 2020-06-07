@@ -5,6 +5,9 @@
   * Automatically build the latest versions of `ghcide` and `ormolu`
     instead of using the ones in `pkgs.haskellPackages`.
 
+  * Added [cabal-fmt](https://github.com/phadej/cabal-fmt) to the list
+    of interactive development tools.
+
   * Added files for `nix-shell` that can be used with `direnv` to load
     all interactive development tools into `PATH`.  Useful when you
     are working on a project that does not use `nix-hs` but you want

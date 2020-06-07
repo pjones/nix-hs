@@ -1,4 +1,16 @@
 {
+    "cabal-fmt": {
+        "branch": "master",
+        "description": "An experiment of formatting .cabal files",
+        "homepage": null,
+        "owner": "phadej",
+        "repo": "cabal-fmt",
+        "rev": "5a1329912f1bd2a5c38278ebcb4353129c0fa922",
+        "sha256": "11bw9p01km87i640jn596xplpg9mki1hpihxz3p7vpm1li5dw5fh",
+        "type": "tarball",
+        "url": "https://github.com/phadej/cabal-fmt/archive/5a1329912f1bd2a5c38278ebcb4353129c0fa922.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "ghc-check-0.3.0.1": {
         "branch": "v0.3.0.1",
         "description": "utility to detect mismatches of ghc api versions",
