@@ -1,6 +1,7 @@
-{ sources ? import ./sources.nix, pkgs ? import sources.nixpkgs { }, ghc }:
+{ sources ? import ./sources.nix, pkgs ? import sources.nixpkgs { }
+, compilerName }:
 
 (import sources.ormolu {
   inherit pkgs;
-  ormoluCompiler = ghc;
+  ormoluCompiler = compilerName;
 }).ormolu

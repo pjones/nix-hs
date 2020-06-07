@@ -1,5 +1,6 @@
 { sources ? import ./sources.nix
-, pkgs ? import sources.nixpkgs { config = { allowBroken = true; }; }, ghc }:
+, pkgs ? import sources.nixpkgs { config = { allowBroken = true; }; }
+, compilerName }:
 
 let
   # Haskell overrides to build latest ghcide:
@@ -17,7 +18,7 @@ let
     };
 
   # Perform the overrides:
-  haskell = pkgs.haskell.packages."${ghc}".override (orig: {
+  haskell = pkgs.haskell.packages.${compilerName}.override (orig: {
     overrides =
       pkgs.lib.composeExtensions (orig.overrides or (_: _: { })) overrides;
   });
