@@ -1,7 +1,9 @@
 { sources ? import ./sources.nix, pkgs ? import sources.nixpkgs { }
 , compilerName }:
 
-(import sources.ormolu {
-  inherit pkgs;
-  ormoluCompiler = compilerName;
-}).ormolu
+let
+  package = import sources.ormolu {
+    inherit pkgs;
+    ormoluCompiler = compilerName;
+  };
+in pkgs.haskell.lib.justStaticExecutables package.ormolu

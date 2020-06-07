@@ -28,11 +28,16 @@ run_test() {
       "${args[@]}" \
       "$package"
 
-    # Create an interactive development environment:
-    nix-shell \
-      "${args[@]}" \
-      "$package/shell.nix" \
-      --run "cabal --version"
+    if [ "$static" != "static" ]; then
+      # Create an interactive development environment.  Since we use
+      # the same tools in both static and dynamic builds, don't test
+      # the tools in static mode.  This is to keep the disk space
+      # lower for GitHub Actions.
+      nix-shell \
+        "${args[@]}" \
+        "$package/shell.nix" \
+        --run "cabal --version"
+    fi
   done
 
   # Load an interactive development environment that isn't connected

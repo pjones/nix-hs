@@ -6,4 +6,4 @@ let
   cabal-fmt = haskell.callCabal2nix "cabal-fmt" sources.cabal-fmt {
     Cabal = haskell.Cabal_3_2_0_0;
   };
-in cabal-fmt
+in lib.justStaticExecutables cabal-fmt
