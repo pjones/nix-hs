@@ -9,49 +9,64 @@ set -x
 
 ################################################################################
 top=$(realpath "$(dirname "$0")")
+packages=("$top/hello-world" "$top/multi-package")
+
+################################################################################
+run_build() {
+  package=$1
+  shift
+
+  nix-build \
+    --no-out-link \
+    "${@}" \
+    "$package"
+}
+
+################################################################################
+run_tool() {
+  package=$1
+  shift
+
+  tool=$1
+  shift
+
+  nix-shell \
+    "${@}" \
+    "$package" \
+    --run "$tool"
+}
 
 ################################################################################
 run_test() {
   compiler=$1
-  static=$2
-
+  binary=$2
   args=("--argstr" "compiler" "$compiler")
 
-  if [ "$static" = "static" ]; then
+  if [ "$binary" = "static" ]; then
     args+=("--arg" "static" "true")
   fi
 
-  for package in "$top/hello-world" "$top/multi-package"; do
+  for package in "${packages[@]}"; do
     # Build a package:
-    nix-build \
-      --no-out-link \
-      "${args[@]}" \
-      "$package"
-
-    if [ "$static" != "static" ]; then
-      # Create an interactive development environment.  Since we use
-      # the same tools in both static and dynamic builds, don't test
-      # the tools in static mode.  This is to keep the disk space
-      # lower for GitHub Actions.
-      nix-shell \
-        "${args[@]}" \
-        "$package/shell.nix" \
-        --run "cabal --version"
-    fi
+    run_build "$package" "${args[@]}"
   done
 
-  # Load an interactive development environment that isn't connected
-  # to a nix-hs controlled project.
-  nix-shell \
-    --argstr compiler "$compiler" \
-    "$top/../nix/shell.nix" \
-    --run "ghcide --version"
-
   # Check the `bin' attribute:
-  nix-build \
-    --no-out-link \
-    "${args[@]}" \
-    "$top/hello-world/release.nix"
+  run_build "$top/hello-world" "${args[@]}" -A bin
+
+  # Create an interactive development environment.  Since we use
+  # the same tools in both static and dynamic builds, don't test
+  # the tools in static mode.  This is to keep the disk space
+  # lower for GitHub Actions.
+  if [ "$binary" != "static" ]; then
+    for package in "${packages[@]}"; do
+      run_tool "$package/shell.nix" "cabal --version" "${args[@]}"
+    done
+
+    # Load an interactive development environment that isn't connected
+    # to a nix-hs controlled project.
+    run_tool "$top/../nix/shell.nix" "ghcide --version" "${args[@]}"
+  fi
 }
 
 ################################################################################

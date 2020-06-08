@@ -88,11 +88,7 @@ let
         (lib.benchmark (lib.appendBuildInputs buildInputs
           (lib.overrideSrc (dirOf (toString cabalFile))
             (haskell.callPackage (toString (cabalNix cabalFile)) { })))));
-    in drv.overrideAttrs (orig: {
-      passthru = orig.passthru or { } // {
-        bin = pkgs.haskell.lib.justStaticExecutables drv;
-      };
-    });
+    in drv;
 
   # When we have more than one cabal file so we build an attribute set
   # of derivations where the keys are package names and the values are
@@ -162,7 +158,13 @@ let
   # set and add an interactive environment to the attribute set itself.
   extractPackages = pkgs: haskell: nameOrNames:
     let
-      patch = drv: addStaticDeps (makeInteractive drv);
+      patch = drv: addPassthruBinds (addStaticDeps (makeInteractive drv));
+      addPassthruBinds = drv:
+        drv.overrideAttrs (orig: {
+          passthru = orig.passthru or { } // {
+            bin = pkgs.haskell.lib.justStaticExecutables drv;
+          };
+        });
       addStaticDeps = drv:
         if enableFullyStaticExecutables then
           (helpers pkgs).appendBuildInputs (staticBuildInputs pkgs) drv
@@ -196,7 +198,7 @@ in if enableFullyStaticExecutables then
       defaultCabalPackageVersionComingWithGhc =
         compilers.attrs.${compilers.name compiler}.cabal;
     };
-  in extractPackages static.pkgs static.haskellPackages result.hask
+  in extractPackages static.approachPkgs static.haskellPackages result.hask
 else
   let result = finalpkgs basepkgs;
   in extractPackages result.pkgs
