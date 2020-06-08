@@ -90,7 +90,7 @@ let
             (haskell.callPackage (toString (cabalNix cabalFile)) { })))));
     in drv.overrideAttrs (orig: {
       passthru = orig.passthru or { } // {
-        bin = haskell.justStaticExecutables drv;
+        bin = pkgs.haskell.lib.justStaticExecutables drv;
       };
     });
 

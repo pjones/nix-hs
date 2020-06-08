@@ -46,6 +46,12 @@ run_test() {
     --argstr compiler "$compiler" \
     "$top/../nix/shell.nix" \
     --run "ghcide --version"
+
+  # Check the `bin' attribute:
+  nix-build \
+    --no-out-link \
+    "${args[@]}" \
+    "$top/hello-world/release.nix"
 }
 
 ################################################################################
