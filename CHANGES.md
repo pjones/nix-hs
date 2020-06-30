@@ -1,5 +1,9 @@
 # Release History
 
+## [?.?] - Unreleased
+
+  * Link the cabal file inside the cabal2nix build to resolve #5
+
 ## [2.0] - 2020-06-07
 
   * Automatically build the latest versions of `ghcide` and `ormolu`

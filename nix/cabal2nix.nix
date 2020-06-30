@@ -10,7 +10,6 @@
 #
 { pkgs, cabal, flags }:
 with pkgs.lib;
-
 let
   # The package name derived from the cabal file name:
   name = removeSuffix ".cabal" (baseNameOf (toString cabal));
@@ -18,13 +17,15 @@ let
   # All flags as a string:
   flagsStr = concatMapStringsSep " " (f: "-f${f}") flags;
 
-in pkgs.stdenvNoCC.mkDerivation {
-  name = "${name}.nix";
-  src = cabal;
-
+in
+pkgs.stdenvNoCC.mkDerivation {
+  name = "${name}-cabal2nix";
+  phases = [ "buildPhase" ];
   buildInputs = with pkgs; [ cabal2nix ];
 
   buildCommand = ''
-    cabal2nix ${flagsStr} $(dirname ${cabal}) > $out
+    mkdir -p $out
+    ln -s ${cabal} $out/${name}.cabal
+    cabal2nix ${flagsStr} $out > $out/default.nix
   '';
 }
