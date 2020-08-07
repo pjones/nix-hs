@@ -104,7 +104,7 @@ In the example above, the `overrides` function takes three arguments:
 
      - `unBreak`: Remove the `broken` flag from a package
      - `compilerName`: The nixpkgs name of the Haskell compiler
-       being used (e.g. `ghc883`)
+       being used (e.g. `ghc884`)
      - `pkgs`: The full package set, after overriding
 
   2. `self`: The final set of Haskell packages after applying all

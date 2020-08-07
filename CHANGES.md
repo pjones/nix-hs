@@ -2,7 +2,12 @@
 
 ## [?.?] - Unreleased
 
-  * Link the cabal file inside the cabal2nix build to resolve #5
+  * Update nixpkgs to pull in GHC 8.8.4 and 8.10.2.
+
+  * Use `callCabal2nixWithOptions` instead of a custom solution (#5)
+
+  * New `haskell-packages-overlay.nix` file so nix-hs can patch broken
+    Haskell packages that prevent the tests from passing.
 
 ## [2.0] - 2020-06-07
 

@@ -11,15 +11,16 @@
 # Extra library functions:
 { pkgs }:
 with pkgs.lib;
-
 let
 
   haskellSourceFilter = name: type:
     let baseName = baseNameOf (toString name);
-    in !(baseName == "dist" || baseName == "dist-newstyle" || baseName == "TAGS"
-      || hasPrefix ".ghc.environment" baseName);
+    in
+      !(baseName == "dist" || baseName == "dist-newstyle" || baseName == "TAGS"
+        || hasPrefix ".ghc.environment" baseName);
 
-in rec {
+in
+rec {
   # Re-export nixpkgs:
   inherit pkgs;
 
@@ -38,7 +39,7 @@ in rec {
   # Append some build inputs:
   appendBuildInputs = buildInputs: drv:
     drv.overrideAttrs
-    (orig: { buildInputs = orig.buildInputs ++ buildInputs; });
+      (orig: { buildInputs = orig.buildInputs ++ buildInputs; });
 
   # Enable benchmarks (not sure why this isn't the default):
   benchmark = drv: pkgs.haskell.lib.doBenchmark drv;
@@ -73,5 +74,6 @@ in rec {
         postInstall = (orig.postInstall or "")
           + f "$data/share/${gname}/${gsystem}-${gname}/${drv.name}";
       });
-    in if f != null then go else drv;
+    in
+    if f != null then go else drv;
 }
