@@ -89,10 +89,10 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "NixOS",
         "repo": "nixpkgs-channels",
-        "rev": "1ae28ebfdb7e7d48f003881967db67c156724912",
-        "sha256": "1qqzxaf0nfsg8zdgr5kghih4pr46q5acbnpzihnsdiiykz4xvs3f",
+        "rev": "fcd447bfed52b95d8e63314c0e8ab3c01649dfdc",
+        "sha256": "013gvrhxvn3qpfjf0vjb3nymw8h4zmdgnvz46dvfp8cgvv0603s4",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/1ae28ebfdb7e7d48f003881967db67c156724912.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/fcd447bfed52b95d8e63314c0e8ab3c01649dfdc.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "ormolu": {

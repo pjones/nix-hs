@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        ghc: [ghc865, ghc883, ghc8101]
+        ghc: [ghc865, ghc884, ghc8102]
     steps:
     - uses: actions/checkout@v2
     - uses: cachix/install-nix-action@v10
