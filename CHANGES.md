@@ -4,6 +4,12 @@
 
   * Update nixpkgs to pull in GHC 8.8.4 and 8.10.2.
 
+  * Update ghcide to version 0.4.0.
+
+  * Update cabal-fmt to version 0.1.4.
+
+  * Add [stan](https://github.com/kowainik/stan) at version 0.0.1.0.
+
   * Use `callCabal2nixWithOptions` instead of a custom solution (#5)
 
   * New `haskell-packages-overlay.nix` file so nix-hs can patch broken

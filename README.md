@@ -11,13 +11,27 @@ development.  Here are some of the features that you might find the
 most useful:
 
   * An interactive development environment (via `nix-shell`) that
-    includes `cabal`, `stack`, `ghcide`, `ormolu`, a Hoogle database,
-    etc.
+    includes:
 
-  * Easy to use system for [overriding Haskell
-    packages](#using-a-broken-package) (e.g., use a package not on
-    Hackage, fix a package marked as broken, etc.) without having to
-    write tons of Nix code.
+      * GHC (8.6.5, 8.8.4, or 8.10.2)
+
+      * `cabal`
+
+      * `stack`
+
+      * [`ghcide`][ghcide] version 0.4.0
+
+      * [`ormolu`][ormolu] version 0.1.2.0
+
+      * [`cabal-fmt`][cabal-fmt] version 0.1.4
+
+      * [`stan`][stan] version 0.0.1.0
+
+      * and a Hoogle database for all of your project's dependencies
+
+  * Easy to use system for [overriding Haskell packages](#using-a-broken-package) (e.g., use
+    a package not on Hackage, fix a package marked as broken, etc.)
+    without having to write tons of Nix code.
 
   * Works seamlessly with [direnv][], [lorri][], and [niv][] if you
     already have those tools installed.
@@ -25,16 +39,14 @@ most useful:
   * Switch GHC versions by passing an argument to `nix-build` or
     `nix-shell`.
 
-  * [Strip dependencies](#access-to-binary-only-packages) from a
-    package so you can deploy just a binary without tons of other
-    packages coming along for the ride.
+  * [Strip dependencies](#access-to-binary-only-packages) from a package so you can deploy just a
+    binary without tons of other packages coming along for the ride.
 
-  * Build [fully static binaries](#fully-static-binaries) that don't
-    require any system libraries or the nix store.
+  * Build [fully static binaries](#fully-static-binaries) that don't require any system
+    libraries or the nix store (Linux only).
 
   * Create an interactive development environment [without adding
-    nix-hs](#interactive-environments-without-nix-hs) as a project
-    dependency.
+    nix-hs](#interactive-environments-without-nix-hs) as a project dependency.
 
   * Fetch pre-built tools from [the binary cache](#using-the-binary-cache).
 
@@ -279,3 +291,7 @@ static binaries](#fully-static-binaries).
 [musl]: https://www.musl-libc.org/
 [glibc]: https://www.gnu.org/software/libc/
 [static-haskell-nix]: https://github.com/nh2/static-haskell-nix
+[ghcide]: https://github.com/haskell/ghcide/
+[ormolu]: https://github.com/tweag/ormolu
+[stan]: https://github.com/kowainik/stan
+[cabal-fmt]: https://github.com/phadej/cabal-fmt
