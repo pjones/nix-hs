@@ -1,26 +1,26 @@
 {
     "cabal-fmt": {
-        "branch": "master",
+        "branch": "v0.1.4",
         "description": "An experiment of formatting .cabal files",
         "homepage": null,
         "owner": "phadej",
         "repo": "cabal-fmt",
-        "rev": "5a1329912f1bd2a5c38278ebcb4353129c0fa922",
-        "sha256": "11bw9p01km87i640jn596xplpg9mki1hpihxz3p7vpm1li5dw5fh",
+        "rev": "0c716667848e0a6f2b5f999b60b067e36b0495ce",
+        "sha256": "0rbv915cf1z3amwnqf5vpi1yyw8sik7smrzkxr5npxj3s12hw9g7",
         "type": "tarball",
-        "url": "https://github.com/phadej/cabal-fmt/archive/5a1329912f1bd2a5c38278ebcb4353129c0fa922.tar.gz",
+        "url": "https://github.com/phadej/cabal-fmt/archive/0c716667848e0a6f2b5f999b60b067e36b0495ce.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "ghcide": {
-        "branch": "v0.3.0",
+        "branch": "v0.4.0",
         "description": "A library for building Haskell IDE tooling",
         "homepage": "",
         "owner": "haskell",
         "repo": "ghcide",
-        "rev": "6128c74ba2ef7a6d032eed6c9b954c2b5acd0f17",
-        "sha256": "0ja654vyizfb6i43fb1naxk1l14w4sxpygl3624d9yms8kxg4pr6",
+        "rev": "153536bda11fbf1ebee8434aa981911db73d09b8",
+        "sha256": "0cfa4m23w761cmj0ibahlxcr72an2s3vixzhff4hds5baacn5lqf",
         "type": "tarball",
-        "url": "https://github.com/haskell/ghcide/archive/6128c74ba2ef7a6d032eed6c9b954c2b5acd0f17.tar.gz",
+        "url": "https://github.com/haskell/ghcide/archive/153536bda11fbf1ebee8434aa981911db73d09b8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -57,6 +57,18 @@
         "sha256": "06z40x2qkrplcagympr1yd1v1i9f3q6c2l4naqsnp24ihp78w8a1",
         "type": "tarball",
         "url": "https://github.com/tweag/ormolu/archive/bbcb81203191e088b098b0347fa62d12d4ad9bfd.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "stan": {
+        "branch": "v0.0.1.0",
+        "description": "🕵️ Haskell STatic ANalyser",
+        "homepage": "https://kowainik.github.io/projects/stan",
+        "owner": "kowainik",
+        "repo": "stan",
+        "rev": "6d96b9d65ace8b283ef069ef3f36bfeaed43d859",
+        "sha256": "0f3cvx4wyl4vg3ddryly5hwzinpj2xvag9dixr8xl9j9qwwgpxz4",
+        "type": "tarball",
+        "url": "https://github.com/kowainik/stan/archive/6d96b9d65ace8b283ef069ef3f36bfeaed43d859.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "static-haskell-nix": {
