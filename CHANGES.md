@@ -15,6 +15,10 @@
   * New `haskell-packages-overlay.nix` file so nix-hs can patch broken
     Haskell packages that prevent the tests from passing.
 
+  * The standalone shell file has been renamed from `nix/shell.nix` to
+    `nix/shell/default.nix` and all of the interactive tool files have
+    been moved into `nix/shell`.
+
 ## [2.0] - 2020-06-07
 
   * Automatically build the latest versions of `ghcide` and `ormolu`
