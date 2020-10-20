@@ -173,18 +173,18 @@ watch_file $(find . -name '*.cabal' -o -name '*.nix')
 
 If you don't want to use `nix-hs` to control your `default.nix` you
 can still use it for building an interactive development environment.
-Just clone this repository and use the `nix/shell.nix` file.
+Just clone this repository and use the `nix/shell/default.nix` file.
 
 For example, to drop into an interactive shell:
 
 ```
-$ nix-shell /path/to/nix-hs/nix/shell.nix
+$ nix-shell /path/to/nix-hs/nix/shell
 ```
 
 Or
 
 ```
-$ nix-shell --argstr compiler 8.8.3 /path/to/nix-hs/nix/shell.nix
+$ nix-shell --argstr compiler 8.8.3 /path/to/nix-hs/nix/shell
 ```
 
 Even better, use [direnv][] so your normal shell and text editor can
@@ -192,7 +192,7 @@ see all the installed development tools.  Here's an example `.envrc`
 file:
 
 ```sh
-use nix /path/to/nix-hs/nix/shell.nix
+use nix /path/to/nix-hs/nix/shell
 ```
 
 ## Access to Binary-Only Packages

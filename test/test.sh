@@ -65,7 +65,7 @@ run_test() {
 
     # Load an interactive development environment that isn't connected
     # to a nix-hs controlled project.
-    run_tool "$top/../nix/shell.nix" "ghcide --version" "${args[@]}"
+    run_tool "$top/../nix/shell" "ghcide --version" "${args[@]}"
   fi
 }
 
