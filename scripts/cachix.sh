@@ -37,7 +37,15 @@ cachix_push() {
 }
 
 ################################################################################
-for compiler in $(jq -r 'keys|join(" ")' "$top/compilers.json"); do
+compilers=()
+
+readarray -t compilers < <(
+  jq -r \
+    'map_values(select(.lts))|keys|join(" ")' \
+    <"$top/compilers.json"
+)
+
+for compiler in "${compilers[@]}"; do
   cachix_push "$compiler" "dynamic"
   cachix_push "$compiler" "static"
 done

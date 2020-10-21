@@ -283,6 +283,9 @@ action](https://github.com/pjones/nix-hs/actions) and even includes
 the statically compiled versions of GHC needed for building [fully
 static binaries](#fully-static-binaries).
 
+NOTE: Due to disk space limitations the cache is limited to the
+current LTS version of GHC.
+
 [haskell]: https://www.haskell.org/
 [nixpkgs]: https://nixos.org/nix/
 [direnv]: https://github.com/direnv/direnv

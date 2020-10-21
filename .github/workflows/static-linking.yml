@@ -1,7 +1,5 @@
 name: static-linking
-on:
-  pull_request:
-  push:
+on: pull_request
 jobs:
   tests:
     runs-on: ${{ matrix.os }}
@@ -9,10 +7,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        ghc: [ghc865, ghc884, ghc8102]
+        ghc: [ghc884]
     steps:
     - uses: actions/checkout@v2
-    - uses: cachix/install-nix-action@v10
+    - uses: cachix/install-nix-action@v11
       with:
         skip_adding_nixpkgs_channel: true
     - uses: cachix/cachix-action@v6

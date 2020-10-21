@@ -3,7 +3,8 @@
     "cabal": "Cabal_3_2_0_0"
   },
   "ghc884": {
-    "cabal": "Cabal_3_2_0_0"
+    "cabal": "Cabal_3_2_0_0",
+    "lts": true
   },
   "ghc865": {
     "cabal": "Cabal_2_4_1_0"
