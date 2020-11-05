@@ -1,6 +1,6 @@
 # Release History
 
-## [?.?] - Unreleased
+## 20.09 (November 5, 2020)
 
   * Update nixpkgs to pull in GHC 8.8.4 and 8.10.2.
 
@@ -19,7 +19,9 @@
     `nix/shell/default.nix` and all of the interactive tool files have
     been moved into `nix/shell`.
 
-## [2.0] - 2020-06-07
+  * Release will now track NixOS
+
+## 2.0 (June 7, 2020)
 
   * Automatically build the latest versions of `ghcide` and `ormolu`
     instead of using the ones in `pkgs.haskellPackages`.
@@ -48,6 +50,6 @@
 
 [static-haskell-nix]: https://github.com/nh2/static-haskell-nix
 
-## [1.0] - 2019-09-12
+## 1.0 (September 12, 2019)
 
   * Initial release
