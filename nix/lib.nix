@@ -16,8 +16,10 @@ let
   haskellSourceFilter = name: type:
     let baseName = baseNameOf (toString name);
     in
-      !(baseName == "dist" || baseName == "dist-newstyle" || baseName == "TAGS"
-        || hasPrefix ".ghc.environment" baseName);
+      !(baseName == "dist"
+        || baseName == "dist-newstyle"
+        || baseName == "TAGS"
+        || hasPrefix "." baseName);
 
 in
 rec {
