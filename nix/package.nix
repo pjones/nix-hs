@@ -105,11 +105,9 @@ let
     let appendHaskellOverrides = overlay:
       pkgs.appendOverlays [
         (makeOverlay (hlib:
-          pkgs.lib.composeExtensions
-            (import ./haskell-packages-overlay.nix hlib)
-            (pkgs.lib.composeExtensions
-              (overrides hlib)
-              (overlay hlib))))
+          (pkgs.lib.composeExtensions
+            (overrides hlib)
+            (overlay hlib))))
       ];
     in
     if builtins.isAttrs cabal then {
