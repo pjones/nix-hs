@@ -1,7 +1,6 @@
 # Haskell + nixpkgs = nix-hs
 
-[![dynamic-linking](https://github.com/pjones/nix-hs/workflows/dynamic-linking/badge.svg)](https://github.com/pjones/nix-hs/actions?query=workflow%3Adynamic-linking)
-[![static-linking](https://github.com/pjones/nix-hs/workflows/static-linking/badge.svg)](https://github.com/pjones/nix-hs/actions?query=workflow%3Astatic-linking)
+[![tests](https://github.com/pjones/nix-hs/workflows/tests/badge.svg)](https://github.com/pjones/nix-hs/actions?query=workflow%3Atests)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/pjones/nix-hs?label=release)](https://github.com/pjones/nix-hs/releases)
 [![cachix](https://img.shields.io/badge/cachix-nix--hs-green)](https://app.cachix.org/cache/nix-hs)
 
@@ -45,9 +44,6 @@ most useful:
 
   * [Strip dependencies](#access-to-binary-only-packages) from a package so you can deploy just a
     binary without tons of other packages coming along for the ride.
-
-  * Build [fully static binaries](#fully-static-binaries) that don't require any system
-    libraries or the nix store (Linux only).
 
   * Create an interactive development environment [without adding
     nix-hs](#interactive-environments-without-nix-hs) as a project dependency.
@@ -224,55 +220,6 @@ in pkgs.dockerTools.buildImage {
   config = {
     Cmd = [ "${mypackage}/bin/hello" ];
   };
-}
-```
-
-## Fully Static Binaries
-
-It's possible to build fully static binaries using the
-[static-haskell-nix][] project.  Here are some things you should keep
-in mind:
-
-  * Every upstream dependency needs to be rebuilt so it links with
-    [musl][] instead of [glibc][], including GHC and its dependencies.
-    This can take a very long time so you might want to consider using
-    [the binary cache](#using-the-binary-cache).
-
-  * Ensuring that all packages in nixpkgs build with [musl][] is not a
-    priority and is sometimes broken.  You'll often need to pin
-    nixpkgs to a specific commit off master.  The best way to find a
-    working commit ID for nixpkgs is to see what's being used to build
-    the `survey` portion of [static-haskell-nix][].
-
-  * As of June 5, 2020 [a patch](https://github.com/NixOS/nixpkgs/issues/85924)
-    needs to be applied to nixpkgs so that we can bootstrap a
-    statically compiled GHC.  `nix-hs` will automatically apply this
-    patch to the nixpkgs set that you give it.
-
-With that out of the way, let's talk about how to actually build a
-static binary.  Most of the work has already been done for you and
-it's likely that all you'll need to do is set the
-`enableFullyStaticExecutables` argument to `true` when calling the
-`nix-hs` function.
-
-You may also need to link with static libraries created by the
-[static-haskell-nix][] project.  If your package fails to build due to
-missing static libraries use the `staticBuildInputs` argument to
-`nix-hs` to add more `buildInputs`.
-
-Here's a complete example:
-
-```nix
-{ pkgs ? import <nixpkgs> { } }:
-
-let
-  nix-hs =
-    import (fetchGit "https://github.com/pjones/nix-hs.git") { inherit pkgs; };
-
-in nix-hs {
-  cabal = ./test/hello-world/hello-world.cabal;
-  enableFullyStaticExecutables = true;
-  staticBuildInputs = static: with static; [ zlib_both ];
 }
 ```
 

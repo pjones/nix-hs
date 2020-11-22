@@ -1,4 +1,4 @@
-name: dynamic-linking
+name: tests
 on: pull_request
 jobs:
   tests:
