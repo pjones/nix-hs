@@ -189,7 +189,15 @@ let
   # Using the correct package set, return the resulting derivation(s).
 in
 if enableFullyStaticExecutables then
-  staticBinaryViaMusl
+  builtins.trace
+    (
+      ''
+        enableFullyStaticExecutables is deprecated and will be removed in
+        the next version of nix-hs.  Please use static-haskell.nix
+        directly.
+      ''
+    )
+    staticBinaryViaMusl
 else
   let result = finalpkgs basepkgs;
   in

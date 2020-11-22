@@ -29,6 +29,10 @@
 
   * Releases will now track NixOS
 
+  * NOTE: the `enableFullyStaticExecutables` flag is deprecated and
+    will be removed in the next release.  It can easily be replaced by
+    giving nix-hs a package set from `static-haskell.nix`.
+
 ## 2.0 (June 7, 2020)
 
   * Automatically build the latest versions of `ghcide` and `ormolu`
