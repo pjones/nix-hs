@@ -15,17 +15,21 @@ most useful:
 
       * GHC (8.6.5, 8.8.4, or 8.10.2)
 
-      * `cabal`
+      * `cabal` 3.2.0
 
-      * `stack`
+      * `stack` 2.3.3
 
-      * [`ghcide`][ghcide] version 0.4.0
+      * [hlint][] 3.2.2
 
-      * [`ormolu`][ormolu] version 0.1.2.0
+      * [ghcide][ghcide] 0.5.0
 
-      * [`cabal-fmt`][cabal-fmt] version 0.1.4
+      * [haskell-language-server][] 0.6.0
 
-      * [`stan`][stan] version 0.0.1.0
+      * [ormolu][ormolu] 0.1.4.1
+
+      * [cabal-fmt][cabal-fmt] 0.1.5
+
+      * [stan][stan] 0.0.1.0
 
       * and a Hoogle database for all of your project's dependencies
 
@@ -298,3 +302,5 @@ current LTS version of GHC.
 [ormolu]: https://github.com/tweag/ormolu
 [stan]: https://github.com/kowainik/stan
 [cabal-fmt]: https://github.com/phadej/cabal-fmt
+[haskell-language-server]: https://github.com/haskell/haskell-language-server
+[hlint]: https://github.com/ndmitchell/hlint

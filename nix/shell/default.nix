@@ -1,9 +1,10 @@
-{ sources ? import ../sources.nix
-, pkgs ? import sources.nixpkgs { }
-, compiler ? "default"
+{ compiler ? "default"
 , name ? "nix-hs"
 }:
 let
+  sources = import ../sources.nix;
+  pkgs = import sources.nixpkgs { };
+
   overrideHaskellPackages = overrides:
     pkgs.haskell.packages.${tools.compilerName}.override
       (orig: {
@@ -24,7 +25,7 @@ let
   nix-hs-lib = import ../lib.nix { inherit pkgs; };
 
   tools = rec {
-    inherit (pkgs) lib fetchFromGitHub;
+    inherit (pkgs) lib fetchurl fetchFromGitHub;
     inherit sources pkgs overrideHaskellPackages unsupportedGHC;
     inherit (nix-hs-lib) unBreak;
 
@@ -33,19 +34,25 @@ let
 
     haskell = pkgs.haskell;
     haskellPackages = haskell.packages.${compilerName};
+    overrides = callPackage ./overrides.nix { };
+
     justStaticExecutables = haskell.lib.justStaticExecutables;
-    callCabal2nix = haskellPackages.callCabal2nix;
-    callHackage = haskellPackages.callHackage;
     dontCheck = haskell.lib.dontCheck;
     doJailbreak = haskell.lib.doJailbreak;
 
     cabal-fmt = callPackage ./cabal-fmt.nix { };
     ghcide = callPackage ./ghcide.nix { };
+    haskell-language-server = callPackage ./haskell-language-server.nix { };
+    hlint = justStaticExecutables overrides.hlint;
     ormolu = callPackage ./ormolu.nix { };
     stan = callPackage ./stan.nix { };
   };
 
 in
+assert (pkgs.lib.assertMsg
+  (pkgs.haskell.packages ? ${tools.compilerName})
+  "This version of nix-hs does not support ${tools.compilerName}.");
+
 pkgs.mkShell {
   name = "shell-env-for-${name}-${tools.compilerName}";
 
@@ -56,6 +63,8 @@ pkgs.mkShell {
     ++ (with tools; [
       cabal-fmt
       ghcide
+      haskell-language-server
+      hlint
       ormolu
       stan
     ])
@@ -63,7 +72,6 @@ pkgs.mkShell {
       cabal-install
       ghc
       hasktags
-      hlint
       hoogle
     ]);
 }

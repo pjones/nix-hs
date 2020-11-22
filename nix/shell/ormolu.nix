@@ -1,12 +1,5 @@
-{ sources
-, pkgs
-, compilerName
+{ overrides
 , justStaticExecutables
 }:
-let
-  package = import sources.ormolu {
-    inherit pkgs;
-    ormoluCompiler = compilerName;
-  };
-in
-justStaticExecutables package.ormolu
+
+justStaticExecutables overrides.ormolu

@@ -1,11 +1,10 @@
 { sources
-, callCabal2nix
-, justStaticExecutables
 , haskellPackages
+, justStaticExecutables
 }:
 let
 
-  cabal-fmt = callCabal2nix "cabal-fmt" sources.cabal-fmt {
+  cabal-fmt = haskellPackages.callCabal2nix "cabal-fmt" sources.cabal-fmt {
     Cabal = haskellPackages.Cabal_3_2_0_0;
   };
 
