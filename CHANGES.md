@@ -16,9 +16,6 @@
 
   * Use `callCabal2nixWithOptions` instead of a custom solution (#5)
 
-  * New `haskell-packages-overlay.nix` file so nix-hs can patch broken
-    Haskell packages that prevent the tests from passing.
-
   * The standalone shell file has been renamed from `nix/shell.nix` to
     `nix/shell/default.nix` and all of the interactive tool files have
     been moved into `nix/shell`.
