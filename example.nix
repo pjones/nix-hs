@@ -1,7 +1,14 @@
-{ pkgs ? import <nixpkgs> { } }:
-
+{ pkgs ? import <nixpkgs> { }
+}:
 let
   nix-hs =
-    import (fetchGit "https://github.com/pjones/nix-hs.git") { inherit pkgs; };
-
-in nix-hs { cabal = ./test/hello-world/hello-world.cabal; }
+    import
+      (fetchTarball
+        "https://github.com/pjones/nix-hs/archive/release-20.09.tar.gz")
+      {
+        inherit pkgs;
+      };
+in
+nix-hs {
+  cabal = ./test/hello-world/hello-world.cabal;
+}
