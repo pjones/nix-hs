@@ -13,7 +13,6 @@
 }:
 let
   tools = import ./shell {
-    inherit pkgs;
     compiler = compilerName;
   };
 

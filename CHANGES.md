@@ -1,12 +1,16 @@
 # Release History
 
-## 20.09 (November 5, 2020)
+## 20.09 (November 22, 2020)
 
   * Update nixpkgs to pull in GHC 8.8.4 and 8.10.2.
 
-  * Update ghcide to version 0.4.0.
+  * Update ghcide to version 0.5.0.
 
-  * Update cabal-fmt to version 0.1.4.
+  * Update cabal-fmt to version 0.1.5.
+
+  * Update hlint to version 3.2.2.
+
+  * Add [haskell-language-server](https://github.com/haskell/haskell-language-server) at version 0.6.0.
 
   * Add [stan](https://github.com/kowainik/stan) at version 0.0.1.0.
 
@@ -19,7 +23,11 @@
     `nix/shell/default.nix` and all of the interactive tool files have
     been moved into `nix/shell`.
 
-  * Release will now track NixOS
+  * Interactive tools such as `ghcide` and `ormolu` are built from a
+    pinned version of nixpkgs.  Everything else, including GHC and
+    packages, are built from the nixpkgs passed to nix-hs.
+
+  * Releases will now track NixOS
 
 ## 2.0 (June 7, 2020)
 
