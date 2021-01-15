@@ -11,40 +11,28 @@
         "url": "https://github.com/phadej/cabal-fmt/archive/dc1e63bb10ddafd6152fae8f7206c3b201b0f7ab.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "ghcide": {
-        "branch": "v0.5.0",
-        "description": "A library for building Haskell IDE tooling",
-        "homepage": "",
-        "owner": "haskell",
-        "repo": "ghcide",
-        "rev": "dcf680402722e7660377bf7da3fca27c2bde988f",
-        "sha256": "0830wb28aca55iax6933z6wg0sxdshwkqlzvnn7khrqrf98wqv5v",
-        "type": "tarball",
-        "url": "https://github.com/haskell/ghcide/archive/dcf680402722e7660377bf7da3fca27c2bde988f.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "haskell-language-server": {
-        "branch": "0.6.0",
+        "branch": "0.8.0",
         "description": "Integration point for ghcide and haskell-ide-engine. One IDE to rule them all.",
         "homepage": "",
         "owner": "haskell",
         "repo": "haskell-language-server",
-        "rev": "372a12e797069dc3ac4fa33dcaabe3b992999d7c",
-        "sha256": "1p2p0shxgvrgflanp57bknagxj57pmkxd7007hvcnf89v658b1q1",
+        "rev": "eb58f13f7b8e4f9bc771af30ff9fd82dc4309ff5",
+        "sha256": "0p6fqs07lajbi2g1wf4w3j5lvwknnk58n12vlg48cs4iz25gp588",
         "type": "tarball",
-        "url": "https://github.com/haskell/haskell-language-server/archive/372a12e797069dc3ac4fa33dcaabe3b992999d7c.tar.gz",
+        "url": "https://github.com/haskell/haskell-language-server/archive/eb58f13f7b8e4f9bc771af30ff9fd82dc4309ff5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "hlint": {
-        "branch": "v3.2.2",
+        "branch": "v3.2.6",
         "description": "Haskell source code suggestions",
         "homepage": null,
         "owner": "ndmitchell",
         "repo": "hlint",
-        "rev": "9d0d30b11bb8f411227579025650a2aae3debbf8",
-        "sha256": "1zw42nwa40vsh78wl75zkwl0bz571554qv9yypyp35gjh3rmp9l1",
+        "rev": "fca7ac0b20134fa085556766a7f82a75b524c550",
+        "sha256": "1xffw93mjqy4nfarzjdqav32hq7pjwcwrphdg4by39002hcq61bh",
         "type": "tarball",
-        "url": "https://github.com/ndmitchell/hlint/archive/9d0d30b11bb8f411227579025650a2aae3debbf8.tar.gz",
+        "url": "https://github.com/ndmitchell/hlint/archive/fca7ac0b20134fa085556766a7f82a75b524c550.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -65,10 +53,10 @@
         "homepage": "",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "58f9c4c7d3a42c912362ca68577162e38ea8edfb",
-        "sha256": "1517dy07jf4zhzknqbgm617lgjxsn7a6k1vgq61c67f6h55qs5ij",
+        "rev": "808b5dd5cbb79c90f30574186ded950bc12d2b91",
+        "sha256": "0qvaki1vg30czn1f606xnnd09zarv910pgpjkyzjmnckxgykv544",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/58f9c4c7d3a42c912362ca68577162e38ea8edfb.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/808b5dd5cbb79c90f30574186ded950bc12d2b91.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "ormolu": {
