@@ -10,13 +10,20 @@
 
 overrideHaskellPackages (self: super: {
   aeson = super.aeson_1_5_2_0;
-  brittany = doJailbreak super.brittany;
+
+  brittany =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/brittany-0.13.1.0/brittany-0.13.1.0.tar.gz";
+      sha256 = "172mg0ch2awfzhz8vzvjrfdjylfzawrbgfr5z82l1qzjh6g9z295";
+    };
+    in super.callCabal2nix "brittany" src { };
+
   data-tree-print = doJailbreak super.data-tree-print;
 
   fourmolu =
     let src = fetchTarball {
-      url = "https://hackage.haskell.org/package/fourmolu-0.2.0.0/fourmolu-0.2.0.0.tar.gz";
-      sha256 = "1dkv9n9m0wrpila8z3fq06p56c7af6avd9kv001s199b0ca7pwa6";
+      url = "https://hackage.haskell.org/package/fourmolu-0.3.0.0/fourmolu-0.3.0.0.tar.gz";
+      sha256 = "05b8ksifahahha3ra1mjby1gr9ysm5jc8li09v40l36z8n370l28";
     };
     in
     super.callCabal2nix "fourmolu" src { };
@@ -40,9 +47,29 @@ overrideHaskellPackages (self: super: {
       "${sources.haskell-language-server}/hls-plugin-api"
       { };
 
+  hls-class-plugin =
+    super.callCabal2nix "hls-class-plugin"
+      "${sources.haskell-language-server}/plugins/hls-class-plugin"
+      { };
+
+  hls-eval-plugin =
+    super.callCabal2nix "hls-eval-plugin"
+      "${sources.haskell-language-server}/plugins/hls-eval-plugin"
+      { };
+
+  hls-explicit-imports-plugin =
+    super.callCabal2nix "hls-explicit-imports-plugin"
+      "${sources.haskell-language-server}/plugins/hls-explicit-imports-plugin"
+      { };
+
   hls-hlint-plugin =
     super.callCabal2nix "hls-hlint-plugin"
       "${sources.haskell-language-server}/plugins/hls-hlint-plugin"
+      { };
+
+  hls-retrie-plugin =
+    super.callCabal2nix "hls-retrie-plugin"
+      "${sources.haskell-language-server}/plugins/hls-retrie-plugin"
       { };
 
   hls-tactics-plugin =
@@ -52,13 +79,17 @@ overrideHaskellPackages (self: super: {
 
   hlint = super.callCabal2nix "hlint" sources.hlint { };
 
+  implicit-hie =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/implicit-hie-0.1.2.5/implicit-hie-0.1.2.5.tar.gz";
+      sha256 = "1l0rz4r4hamvmqlb68a7y4s3n73y6xx76zyprksd0pscd9axznnv";
+    };
+    in super.callCabal2nix "implicit-hie" src { };
+
   implicit-hie-cradle =
-    let src = fetchFromGitHub {
-      owner = "Avi-D-coder";
-      repo = "implicit-hie-cradle";
-      rev = "0.2.0.1";
-      name = "implicit-hie-cradle";
-      sha256 = "1nbwbifhmx9i3m3bf5m5pi0arvxxdsgdq1aw2l7kssfym4v3fbdl";
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/implicit-hie-cradle-0.3.0.2/implicit-hie-cradle-0.3.0.2.tar.gz";
+      sha256 = "1fhc8zccd7g7ixka05cba3cd4qf5jvq1zif29bhn593dfkzy89lz";
     };
     in dontCheck (super.callCabal2nix "implicit-hie-cradle" src { });
 
@@ -66,23 +97,38 @@ overrideHaskellPackages (self: super: {
 
   ghcide =
     dontCheck
-      (doJailbreak
-        (super.callCabal2nix "ghcide" sources.ghcide { }));
+      (super.callCabal2nix "ghcide"
+        "${sources.haskell-language-server}/ghcide"
+        { });
 
   ghc-lib-parser =
     let src = fetchTarball {
-      url = "https://hackage.haskell.org/package/ghc-lib-parser-8.10.2.20200916/ghc-lib-parser-8.10.2.20200916.tar.gz";
-      sha256 = "1apm9zn484sm6b8flbh6a2kqnv1wjan4l58b81cic5fc1jsqnyjk";
+      url = "https://hackage.haskell.org/package/ghc-lib-parser-8.10.3.20201220/ghc-lib-parser-8.10.3.20201220.tar.gz";
+      sha256 = "0ah9wp2m49kpfj7zhi9gs00jwvqcv1n00xdb5l4m6vbmps6dwcsl";
     };
     in super.callCabal2nix "ghc-lib-parser" src { };
 
+  ghc-lib-parser-ex =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/ghc-lib-parser-ex-8.10.0.17/ghc-lib-parser-ex-8.10.0.17.tar.gz";
+      sha256 = "1wh0886bdpnfn90h1lbfrpr36jlyy2x4m1mqlwmr01pl5h19xb5z";
+    };
+    in super.callCabal2nix "ghc-lib-parser-ex" src { };
+
   ghc-lib =
     let src = fetchTarball {
-      url = "https://hackage.haskell.org/package/ghc-lib-8.10.2.20200916/ghc-lib-8.10.2.20200916.tar.gz";
-      sha256 = "1gx0ijay9chachmd1fbb61md3zlvj24kk63fk3dssx8r9c2yp493";
+      url = "https://hackage.haskell.org/package/ghc-lib-8.10.3.20201220/ghc-lib-8.10.3.20201220.tar.gz";
+      sha256 = "1zn1jsl3xdfyiymq9yzhrzwkk8g77bhblbsgahf3w59fpinp43lj";
     };
     in
     super.callCabal2nix "ghc-lib" src { };
+
+  heapsize =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/heapsize-0.3.0.1/heapsize-0.3.0.1.tar.gz";
+      sha256 = "0c8lqndpbx9ahjrqyfxjkj0z4yhm1zlcn8al0ir4ldlahql2xv3r";
+    };
+    in super.callCabal2nix "heapsize" src { };
 
   lsp-test =
     let src = fetchTarball {
@@ -90,6 +136,13 @@ overrideHaskellPackages (self: super: {
       sha256 = "160w3a5mmgjwfgmdrv2ahb4j5r9axc0y52limyrps8nb2s0xrqbf";
     };
     in dontCheck (super.callCabal2nix "lsp-test" src { });
+
+  opentelemetry =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/opentelemetry-0.6.1/opentelemetry-0.6.1.tar.gz";
+      sha256 = "08k71z7bns0i6r89nmxqsl00kyksicq619rqy6pf5m7hq1r4zs9m";
+    };
+    in super.callCabal2nix "opentelemetry" src { };
 
   ormolu = super.callCabal2nix "ormolu" sources.ormolu { };
 
@@ -102,6 +155,11 @@ overrideHaskellPackages (self: super: {
 
   retrie = unBreak super.retrie;
 
+  shake-bench =
+    super.callCabal2nix "shake-bench"
+      "${sources.haskell-language-server}/shake-bench"
+      { };
+
   stylish-haskell =
     let src = fetchTarball {
       url = "https://hackage.haskell.org/package/stylish-haskell-0.12.2.0/stylish-haskell-0.12.2.0.tar.gz";
@@ -111,18 +169,5 @@ overrideHaskellPackages (self: super: {
     super.callCabal2nix "stylish-haskell" src { };
 } // lib.optionalAttrs (lib.hasPrefix "ghc810" compilerName) {
   apply-refact = super.apply-refact_0_8_0_0;
-
-  # Use a fork of brittany that supports GHC 8.10.2 (via the
-  # haskell-language-server cabal.project file).
-  brittany =
-    let src = fetchFromGitHub {
-      owner = "bubba";
-      repo = "brittany";
-      rev = "c59655f10d5ad295c2481537fc8abf0a297d9d1c";
-      name = "brittany";
-      sha256 = "1rkk09f8750qykrmkqfqbh44dbx1p8aq1caznxxlw8zqfvx39cxl";
-    };
-    in dontCheck (super.callCabal2nix "brittany" src { });
-
   ghc-exactprint = super.ghc-exactprint_0_6_3_2;
 })

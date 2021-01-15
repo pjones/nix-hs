@@ -18,11 +18,11 @@ most useful:
 
       * `stack` 2.3.3
 
-      * [hlint][] 3.2.2
+      * [hlint][] 3.2.6
 
-      * [ghcide][ghcide] 0.5.0
+      * [ghcide][ghcide] 0.7.0
 
-      * [haskell-language-server][] 0.6.0
+      * [haskell-language-server][] 0.8.0
 
       * [ormolu][ormolu] 0.1.4.1
 

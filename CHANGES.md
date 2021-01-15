@@ -4,15 +4,9 @@
 
   * Update nixpkgs to pull in GHC 8.8.4 and 8.10.2.
 
-  * Update ghcide to version 0.5.0.
+  * Add [haskell-language-server](https://github.com/haskell/haskell-language-server)
 
-  * Update cabal-fmt to version 0.1.5.
-
-  * Update hlint to version 3.2.2.
-
-  * Add [haskell-language-server](https://github.com/haskell/haskell-language-server) at version 0.6.0.
-
-  * Add [stan](https://github.com/kowainik/stan) at version 0.0.1.0.
+  * Add [stan](https://github.com/kowainik/stan)
 
   * Use `callCabal2nixWithOptions` instead of a custom solution (#5)
 
