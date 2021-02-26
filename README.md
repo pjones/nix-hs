@@ -22,7 +22,7 @@ most useful:
 
       * [ghcide][ghcide] 0.7.0
 
-      * [haskell-language-server][] 0.8.0
+      * [haskell-language-server][] 1.0.0
 
       * [ormolu][ormolu] 0.1.4.1
 

@@ -11,12 +11,21 @@
 overrideHaskellPackages (self: super: {
   aeson = super.aeson_1_5_2_0;
 
-  brittany =
+  apply-refact =
     let src = fetchTarball {
-      url = "https://hackage.haskell.org/package/brittany-0.13.1.0/brittany-0.13.1.0.tar.gz";
-      sha256 = "172mg0ch2awfzhz8vzvjrfdjylfzawrbgfr5z82l1qzjh6g9z295";
+      url = "https://hackage.haskell.org/package/apply-refact-0.9.1.0/apply-refact-0.9.1.0.tar.gz";
+      sha256 = "0r0ch54pqw7v22hfvj01wsr633q8sd83ig9b77chzrbdvmk9xj6s";
     };
-    in super.callCabal2nix "brittany" src { };
+    in super.callCabal2nix "apply-refact" src { };
+
+  brittany =
+    doJailbreak (
+      let src = fetchTarball {
+        url = "https://hackage.haskell.org/package/brittany-0.13.1.0/brittany-0.13.1.0.tar.gz";
+        sha256 = "172mg0ch2awfzhz8vzvjrfdjylfzawrbgfr5z82l1qzjh6g9z295";
+      };
+      in super.callCabal2nix "brittany" src { }
+    );
 
   data-tree-print = doJailbreak super.data-tree-print;
 
@@ -28,15 +37,19 @@ overrideHaskellPackages (self: super: {
     in
     super.callCabal2nix "fourmolu" src { };
 
+  hiedb =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/hiedb-0.3.0.1/hiedb-0.3.0.1.tar.gz";
+      sha256 = "0n6m13lybnb6vl0lh69i2v6xykcd0bl5svkk18964k4wza8a5b12";
+    };
+    in dontCheck (super.callCabal2nix "hiedb" src { });
+
   hie-bios = dontCheck super.hie-bios_0_7_1;
 
   hie-compat =
-    let src = fetchTarball {
-      url = "https://hackage.haskell.org/package/hie-compat-0.1.0.0/hie-compat-0.1.0.0.tar.gz";
-      sha256 = "1q6rrppd0vb5svk36vkqaizq0gggk8cvn3gp245v8l9vcbbphj1p";
-    };
-    in
-    super.callCabal2nix "hie-compat" src { };
+    super.callCabal2nix "hie-compat"
+      "${sources.haskell-language-server}/hie-compat"
+      { };
 
   haskell-language-server =
     dontCheck
@@ -62,6 +75,11 @@ overrideHaskellPackages (self: super: {
       "${sources.haskell-language-server}/plugins/hls-explicit-imports-plugin"
       { };
 
+  hls-haddock-comments-plugin =
+    super.callCabal2nix "hls-haddock-comments-plugin"
+      "${sources.haskell-language-server}/plugins/hls-haddock-comments-plugin"
+      { };
+
   hls-hlint-plugin =
     super.callCabal2nix "hls-hlint-plugin"
       "${sources.haskell-language-server}/plugins/hls-hlint-plugin"
@@ -72,10 +90,17 @@ overrideHaskellPackages (self: super: {
       "${sources.haskell-language-server}/plugins/hls-retrie-plugin"
       { };
 
-  hls-tactics-plugin =
-    super.callCabal2nix "hls-tactics-plugin"
-      "${sources.haskell-language-server}/plugins/tactics"
+  hls-splice-plugin =
+    super.callCabal2nix "hls-splice-plugin"
+      "${sources.haskell-language-server}/plugins/hls-splice-plugin"
       { };
+
+  hls-tactics-plugin =
+    dontCheck (
+      super.callCabal2nix "hls-tactics-plugin"
+        "${sources.haskell-language-server}/plugins/hls-tactics-plugin"
+        { }
+    );
 
   hlint = super.callCabal2nix "hlint" sources.hlint { };
 
@@ -94,6 +119,13 @@ overrideHaskellPackages (self: super: {
     in dontCheck (super.callCabal2nix "implicit-hie-cradle" src { });
 
   ghc-check = super.callHackage "ghc-check" "0.5.0.1" { };
+
+  ghc-exactprint =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/ghc-exactprint-0.6.4/ghc-exactprint-0.6.4.tar.gz";
+      sha256 = "0clxvnl39jkjv3mlfjz1v0bmhy6026vmy5bqcbbqrzabydizvv0k";
+    };
+    in super.callCabal2nix "ghc-exactprint" src { };
 
   ghcide =
     dontCheck
@@ -130,12 +162,28 @@ overrideHaskellPackages (self: super: {
     };
     in super.callCabal2nix "heapsize" src { };
 
+  megaparsec = super.megaparsec_9_0_0;
+
+  lsp =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/lsp-1.1.1.0/lsp-1.1.1.0.tar.gz";
+      sha256 = "0lcqiw5304llxamizza28xy4llhmmrr3dkvlm4pgrhzfcxqwnfrm";
+    };
+    in super.callCabal2nix "lsp" src { };
+
   lsp-test =
     let src = fetchTarball {
-      url = "https://hackage.haskell.org/package/lsp-test-0.11.0.7/lsp-test-0.11.0.7.tar.gz";
-      sha256 = "160w3a5mmgjwfgmdrv2ahb4j5r9axc0y52limyrps8nb2s0xrqbf";
+      url = "https://hackage.haskell.org/package/lsp-test-0.13.0.0/lsp-test-0.13.0.0.tar.gz";
+      sha256 = "1b0p678bh4h1mfbi1v12g9zhnyhgq5q3fiv491ni461v44ypr6bn";
     };
     in dontCheck (super.callCabal2nix "lsp-test" src { });
+
+  lsp-types =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/lsp-types-1.1.0.0/lsp-types-1.1.0.0.tar.gz";
+      sha256 = "1l8g7iq9zsq19hxamy37hf61bmld500pha2xcwwqs7hk53k9wgn8";
+    };
+    in super.callCabal2nix "lsp-types" src { };
 
   opentelemetry =
     let src = fetchTarball {
@@ -167,7 +215,18 @@ overrideHaskellPackages (self: super: {
     };
     in
     super.callCabal2nix "stylish-haskell" src { };
-} // lib.optionalAttrs (lib.hasPrefix "ghc810" compilerName) {
-  apply-refact = super.apply-refact_0_8_0_0;
-  ghc-exactprint = super.ghc-exactprint_0_6_3_2;
+
+  uniplate =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/uniplate-1.6.13/uniplate-1.6.13.tar.gz";
+      sha256 = "01p79pxmgdq8ya8llwrip5awc521y6qdchqw18ydkkidglv5m3bj";
+    };
+    in super.callCabal2nix "uniplate" src { };
+
+  unliftio-core =
+    let src = fetchTarball {
+      url = "https://hackage.haskell.org/package/unliftio-core-0.2.0.1/unliftio-core-0.2.0.1.tar.gz";
+      sha256 = "06cbv2yx5a6qj4p1w91q299r0yxv96ms72xmjvkpm9ic06ikvzzq";
+    };
+    in doJailbreak (super.callCabal2nix "unliftio-core" src { });
 })
