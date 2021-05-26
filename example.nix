@@ -4,7 +4,7 @@ let
   nix-hs =
     import
       (fetchTarball
-        "https://github.com/pjones/nix-hs/archive/release-20.09.tar.gz")
+        "https://github.com/pjones/nix-hs/archive/release-21.05.tar.gz")
       {
         inherit pkgs;
       };

@@ -1,40 +1,4 @@
 {
-    "cabal-fmt": {
-        "branch": "v0.1.5",
-        "description": "An experiment of formatting .cabal files",
-        "homepage": null,
-        "owner": "phadej",
-        "repo": "cabal-fmt",
-        "rev": "dc1e63bb10ddafd6152fae8f7206c3b201b0f7ab",
-        "sha256": "14mbi96m4ci2pjxr8y998mjghbwpwz2c45wp1kn4j5b7pl7bqv21",
-        "type": "tarball",
-        "url": "https://github.com/phadej/cabal-fmt/archive/dc1e63bb10ddafd6152fae8f7206c3b201b0f7ab.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "haskell-language-server": {
-        "branch": "1.0.0",
-        "description": "Integration point for ghcide and haskell-ide-engine. One IDE to rule them all.",
-        "homepage": "",
-        "owner": "haskell",
-        "repo": "haskell-language-server",
-        "rev": "4cd1cf934638881e52b3eba9f70157a4b799c0e9",
-        "sha256": "0p0rhhc6pldzan85qp3nhc54zwabah8r3dvxdzw49i32dvy4xxgs",
-        "type": "tarball",
-        "url": "https://github.com/haskell/haskell-language-server/archive/4cd1cf934638881e52b3eba9f70157a4b799c0e9.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "hlint": {
-        "branch": "v3.2.6",
-        "description": "Haskell source code suggestions",
-        "homepage": null,
-        "owner": "ndmitchell",
-        "repo": "hlint",
-        "rev": "fca7ac0b20134fa085556766a7f82a75b524c550",
-        "sha256": "1xffw93mjqy4nfarzjdqav32hq7pjwcwrphdg4by39002hcq61bh",
-        "type": "tarball",
-        "url": "https://github.com/ndmitchell/hlint/archive/fca7ac0b20134fa085556766a7f82a75b524c550.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "niv": {
         "branch": "master",
         "description": "Easy dependency management for Nix projects",
@@ -48,51 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
-        "branch": "nixos-20.09",
+        "branch": "release-21.05",
         "description": "Nix Packages collection",
         "homepage": "",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "06b11191834abae2b9ccace27818b74fe5a4b293",
-        "sha256": "05vdg6q738snaipj6bxwvmbm4j6fdpn1s8fc1k3wvlvyks87jz27",
+        "rev": "b7f77e07b21e03be88838d9069e8f9cc0f66d7be",
+        "sha256": "1szgy9qz3y99rgaxnqkm82gqs1ilv3kcnpwrnr6119i1dy6mmyis",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/06b11191834abae2b9ccace27818b74fe5a4b293.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "ormolu": {
-        "branch": "0.1.4.1",
-        "description": "A formatter for Haskell source code",
-        "homepage": null,
-        "owner": "tweag",
-        "repo": "ormolu",
-        "rev": "7714b5220e3c559a764fc9c68fdfb4f6dc439ec7",
-        "sha256": "1vq8yrp3b23ydzqhg88l3w43y2hc49gx1c1d3vyg11vfkxf4sfkv",
-        "type": "tarball",
-        "url": "https://github.com/tweag/ormolu/archive/7714b5220e3c559a764fc9c68fdfb4f6dc439ec7.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "stan": {
-        "branch": "v0.0.1.0",
-        "description": "🕵️ Haskell STatic ANalyser",
-        "homepage": "https://kowainik.github.io/projects/stan",
-        "owner": "kowainik",
-        "repo": "stan",
-        "rev": "6d96b9d65ace8b283ef069ef3f36bfeaed43d859",
-        "sha256": "0f3cvx4wyl4vg3ddryly5hwzinpj2xvag9dixr8xl9j9qwwgpxz4",
-        "type": "tarball",
-        "url": "https://github.com/kowainik/stan/archive/6d96b9d65ace8b283ef069ef3f36bfeaed43d859.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "static-haskell-nix": {
-        "branch": "master",
-        "description": "easily build most Haskell programs into fully static Linux executables",
-        "homepage": "",
-        "owner": "nh2",
-        "repo": "static-haskell-nix",
-        "rev": "dbce18f4808d27f6a51ce31585078b49c86bd2b5",
-        "sha256": "084hxnrywsgb73zr41argdkbhkxzm1rqn058pv1l4cp9g1gjr2rr",
-        "type": "tarball",
-        "url": "https://github.com/nh2/static-haskell-nix/archive/dbce18f4808d27f6a51ce31585078b49c86bd2b5.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/b7f77e07b21e03be88838d9069e8f9cc0f66d7be.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

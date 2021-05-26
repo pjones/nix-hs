@@ -39,12 +39,7 @@ run_tool() {
 ################################################################################
 run_test() {
   compiler=$1
-  binary=$2
   args=("--argstr" "compiler" "$compiler")
-
-  if [ "$binary" = "static" ]; then
-    args+=("--arg" "static" "true")
-  fi
 
   for package in "${packages[@]}"; do
     # Build a package:
@@ -54,32 +49,23 @@ run_test() {
   # Check the `bin' attribute:
   run_build "$top/hello-world" "${args[@]}" -A bin
 
-  # Create an interactive development environment.  Since we use
-  # the same tools in both static and dynamic builds, don't test
-  # the tools in static mode.  This is to keep the disk space
-  # lower for GitHub Actions.
-  if [ "$binary" != "static" ]; then
-    for package in "${packages[@]}"; do
-      run_tool "$package/shell.nix" "cabal --version" "${args[@]}"
-    done
+  # Create an interactive development environment.
+  for package in "${packages[@]}"; do
+    run_tool "$package/shell.nix" "cabal --version" "${args[@]}"
+  done
 
-    # Load an interactive development environment that isn't connected
-    # to a nix-hs controlled project.
-    run_tool "$top/../nix/shell" "ghcide --version" "${args[@]}"
-  fi
+  # Load an interactive development environment that isn't connected
+  # to a nix-hs controlled project.
+  run_tool "$top/../nix/shell" "ghcide --version" "${args[@]}"
 }
 
 ################################################################################
 if [ $# -eq 0 ]; then
   for compiler in $(jq -r 'keys|join(" ")' "$top/../compilers.json"); do
-    run_test "$compiler" "dynamic"
-    run_test "$compiler" "static"
+    run_test "$compiler"
   done
 elif [ $# -eq 1 ]; then
-  run_test "$1" "dynamic"
-  run_test "$1" "static"
-elif [ $# -eq 2 ]; then
-  run_test "$1" "$2"
+  run_test "$1"
 else
   echo >&2 "ERROR: invalid arguments"
   exit 1

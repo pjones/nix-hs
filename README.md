@@ -12,21 +12,19 @@ most useful:
   * An interactive development environment (via `nix-shell`) that
     includes:
 
-      * GHC (8.6.5, 8.8.4, or 8.10.2)
+      * GHC (8.8.4, 8.10.4, 9.0.1)
 
-      * `cabal` 3.2.0
+      * `cabal` (3.2.1, 3.4.0, 3.4.0 [respectively])
 
-      * `stack` 2.3.3
+      * `stack` 2.7.1
 
-      * [hlint][] 3.2.6
+      * [hlint][] 3.3.1
 
-      * [ghcide][ghcide] 0.7.0
-
-      * [haskell-language-server][] 1.0.0
+      * [haskell-language-server][] 1.1.0
 
       * [ormolu][ormolu] 0.1.4.1
 
-      * [cabal-fmt][cabal-fmt] 0.1.5
+      * [cabal-fmt][cabal-fmt] 0.1.5.1
 
       * [stan][stan] 0.0.1.0
 
@@ -61,7 +59,7 @@ let
   nix-hs =
     import
       (fetchTarball
-        "https://github.com/pjones/nix-hs/archive/release-20.09.tar.gz")
+        "https://github.com/pjones/nix-hs/archive/release-21.05.tar.gz")
       {
         inherit pkgs;
       };
@@ -233,10 +231,7 @@ If you don't want to spend all day compiling the tools needed to build
 your Haskell package and its development environment you can use the
 `nix-hs` cache [on Cachix](https://app.cachix.org/cache/nix-hs).
 
-The cache is populated after each `git push` via a [GitHub
-action](https://github.com/pjones/nix-hs/actions) and even includes
-the statically compiled versions of GHC needed for building [fully
-static binaries](#fully-static-binaries).
+The cache is populated after each `git push` via a [GitHub action](https://github.com/pjones/nix-hs/actions).
 
 NOTE: Due to disk space limitations the cache is limited to the
 current LTS version of GHC.
@@ -246,10 +241,6 @@ current LTS version of GHC.
 [direnv]: https://github.com/direnv/direnv
 [lorri]: https://github.com/target/lorri
 [niv]: https://github.com/nmattia/niv
-[musl]: https://www.musl-libc.org/
-[glibc]: https://www.gnu.org/software/libc/
-[static-haskell-nix]: https://github.com/nh2/static-haskell-nix
-[ghcide]: https://github.com/haskell/ghcide/
 [ormolu]: https://github.com/tweag/ormolu
 [stan]: https://github.com/kowainik/stan
 [cabal-fmt]: https://github.com/phadej/cabal-fmt
