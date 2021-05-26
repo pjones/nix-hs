@@ -41,11 +41,11 @@ let
     doJailbreak = haskell.lib.doJailbreak;
 
     cabal-fmt = callPackage ./cabal-fmt.nix { };
-    ghcide = callPackage ./ghcide.nix { };
     haskell-language-server = callPackage ./haskell-language-server.nix { };
     hlint = justStaticExecutables overrides.hlint;
     ormolu = callPackage ./ormolu.nix { };
     stan = callPackage ./stan.nix { };
+    stack = justStaticExecutables overrides.stack;
   };
 
 in
@@ -57,18 +57,15 @@ pkgs.mkShell {
   name = "shell-env-for-${name}-${tools.compilerName}";
 
   buildInputs =
-    (with pkgs; [
-      stack
-    ])
-    ++ (with tools; [
+    (with tools; [
       cabal-fmt
-      ghcide
       haskell-language-server
       hlint
       ormolu
       stan
+      stack
     ])
-    ++ (with pkgs.haskell.packages.${tools.compilerName}; [
+    ++ (with tools.overrides; [
       cabal-install
       ghc
       hasktags
