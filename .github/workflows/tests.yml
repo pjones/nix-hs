@@ -7,12 +7,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macOS-latest]
-        ghc: [ghc884]
+        ghc: [ghc8104]
     steps:
     - uses: actions/checkout@v2
-    - uses: cachix/install-nix-action@v12
-    - uses: cachix/cachix-action@v8
+    - uses: cachix/install-nix-action@v13
+    - uses: cachix/cachix-action@v10
       with:
         name: nix-hs
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-    - run: test/test.sh '${{ matrix.ghc }}' dynamic
+    - run: test/test.sh '${{ matrix.ghc }}'

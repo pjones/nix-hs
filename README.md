@@ -14,7 +14,7 @@ most useful:
 
       * GHC (8.8.4, 8.10.4, 9.0.1)
 
-      * `cabal` (3.2.1, 3.4.0, 3.4.0 [respectively])
+      * `cabal-install` 3.4.0
 
       * `stack` 2.7.1
 
@@ -29,6 +29,14 @@ most useful:
       * [stan][stan] 0.0.1.0
 
       * and a Hoogle database for all of your project's dependencies
+
+    **NOTE:** The following tools do not currently support GHC 9.0.1:
+
+      * haskell-language-server
+
+      * ormolu
+
+      * stan
 
   * Easy to use system for [overriding Haskell packages](#using-a-broken-package) (e.g., use
     a package not on Hackage, fix a package marked as broken, etc.)
@@ -175,18 +183,18 @@ watch_file $(find . -name '*.cabal' -o -name '*.nix')
 
 If you don't want to use `nix-hs` to control your `default.nix` you
 can still use it for building an interactive development environment.
-Just clone this repository and use the `nix/shell/default.nix` file.
+Just clone this repository and use the `shell/default.nix` file.
 
 For example, to drop into an interactive shell:
 
 ```
-$ nix-shell /path/to/nix-hs/nix/shell
+$ nix-shell /path/to/nix-hs/shell
 ```
 
 Or
 
 ```
-$ nix-shell --argstr compiler 8.8.3 /path/to/nix-hs/nix/shell
+$ nix-shell --argstr compiler 8.8.3 /path/to/nix-hs/shell
 ```
 
 Even better, use [direnv][] so your normal shell and text editor can
@@ -194,7 +202,7 @@ see all the installed development tools.  Here's an example `.envrc`
 file:
 
 ```sh
-use nix /path/to/nix-hs/nix/shell
+use nix /path/to/nix-hs/shell
 ```
 
 ## Access to Binary-Only Packages
