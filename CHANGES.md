@@ -1,5 +1,16 @@
 # Release History
 
+## 21.05 (Unreleased)
+
+  * The deprecated `enableFullyStaticExecutables` argument was removed
+    along with direct support for `static-haskell.nix`.
+
+  * The standalone shell file has been renamed from
+    `nix/shell/default.nix` to `shell/default.nix`.
+
+  * Removed `ghcide` from the interactive shell environment since it's
+    been subsumed by `haskell-language-server`.
+
 ## 20.09 (November 22, 2020)
 
   * Update nixpkgs to pull in GHC 8.8.4 and 8.10.2.

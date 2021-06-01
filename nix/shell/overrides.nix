@@ -1,4 +1,0 @@
-{ overrideHaskellPackages
-}:
-
-overrideHaskellPackages (self: super: { })
