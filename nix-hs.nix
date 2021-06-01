@@ -25,13 +25,23 @@
 , compiler ? "default"
 
   # Optional: Override `haskellPackages' with a function.  The
-  # function takes three arguments and returns a new package set.
+  # function takes three arguments and returns a new Haskell package
+  # set.
   #
   # The arguments are:
   #
-  # 1. `pkgs.haskell.lib` with some additions.
+  # 1. `pkgs.haskell.lib` with some additions (see below).
   # 2. `self`: The package set you are currently building.
   # 3. `super`: The existing Haskell package set.
+  #
+  # For a list of additional functions that are available in the `lib`
+  # argument, see `lib/haskell.nix`.
+  #
+  # Also, one additional attribute will be available in `lib`: pkgs,
+  # the final nixpkgs set after all Haskell overrides have been
+  # applied.  This is important for passing on to other invocations of
+  # nix-hs for any dependencies so they pick up the already patched
+  # dependencies from this overrides function.
 , overrides ? (lib: self: super: { })
 
   # Extra nixpkgs packages that your Haskell package depend on:
@@ -133,10 +143,21 @@ let
   # adding in the package generated from the cabal file(s):
   haskellPackages =
     let
+      # Augmented overrides function that accepts the final nixpkgs
+      # set for the `pkgs` attribute which is passed in the Haskell
+      # library functions attrset.
+      overrides_ = self:
+        overrides ({
+          pkgs = self;
+        } // nix-hs.haskell);
+
+      # Jump through some hoops to generate a patched Haskell package
+      # set from the given nixpkgs set, passing along the final
+      # nixpkgs set to the overriding function.
       packages =
-        (nix-hs.packages.overrideHaskellPackages
-          (overrides nix-hs.haskell)
-          nix-hs.ghc.packages);
+        (nix-hs.packages.overrideHaskellPackagesIn
+          overrides_
+          pkgs).haskell.packages.${nix-hs.ghc.attrName};
     in
     nix-hs.packages.overrideHaskellPackages
       (_self: _super: generatedPackages packages)
