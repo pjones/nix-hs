@@ -11,6 +11,13 @@
   * Removed `ghcide` from the interactive shell environment since it's
     been subsumed by `haskell-language-server`.
 
+  * When generating a derivation for a Haskell package the list of
+    source code files will run through a sensible filter which removes
+    directories like `dist-newstyle`.
+
+    This prevents the dreaded `dumping very large path (> 256 MiB)`
+    warning.
+
 ## 20.09 (November 22, 2020)
 
   * Update nixpkgs to pull in GHC 8.8.4 and 8.10.2.
