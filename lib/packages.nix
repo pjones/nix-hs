@@ -80,11 +80,12 @@ rec {
 
       # Load the cabal file:
       cabal2nix =
-        packages.callCabal2nixWithOptions
-          (nameFromCabal cabal)
-          (dirOf cabal)
-          flagsStr
-          { };
+        haskell.cleanSource (dirOf cabal)
+          (packages.callCabal2nixWithOptions
+            (nameFromCabal cabal)
+            (dirOf cabal)
+            flagsStr
+            { });
 
       # The final derivation all patched up:
       drv =

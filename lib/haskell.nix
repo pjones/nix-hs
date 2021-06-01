@@ -16,11 +16,11 @@ let
 
   # A source cleaner for Haskell programs:
   haskellSourceFilter = src:
-    pkgs.cleanSourceWith {
+    lib.cleanSourceWith {
       inherit src;
       filter = name: type:
         let baseName = baseNameOf (toString name); in
-        pkgs.cleanSourceFilter name type &&
+        lib.cleanSourceFilter name type &&
         !(
           baseName == "dist"
           || baseName == "dist-newstyle"
