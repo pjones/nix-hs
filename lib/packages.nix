@@ -21,6 +21,30 @@
 }:
 
 rec {
+  # Overrides Haskell packages in the given nixpkgs set, returning a
+  # new nixpkgs set.
+  #
+  # The given function takes three arguments and returns a new Haskell
+  # package set (see `overrideHaskellPackages` for more details):
+  #
+  # 1. The final nixpkgs set being generated.
+  # 2. The final Haskell package set being generated.
+  # 3. The current Haskell package set.
+  overrideHaskellPackagesIn = f: pkgs:
+    let
+      overlay = self: super: {
+        haskell = super.haskell // {
+          packages = super.haskell.packages // {
+            ${ghc.attrName} =
+              overrideHaskellPackages
+                (f self)
+                super.haskell.packages.${ghc.attrName};
+          };
+        };
+      };
+    in
+    pkgs.appendOverlays [ overlay ];
+
   # Override the given Haskell package set.
   #
   # The given function should take two arguments (self and super) and
