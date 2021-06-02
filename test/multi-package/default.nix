@@ -13,6 +13,10 @@ nix-hs {
   inherit compiler;
   cabal = {
     hello-world = ../hello-world/hello-world.cabal;
-    overrides = ../overrides/overrides.cabal;
+
+    # We're loading the same cabal file twice but that's just to
+    # demonstrate that you can refer to more than one cabal file using
+    # the `cabal` attribute.
+    world-hello = ../hello-world/hello-world.cabal;
   };
 }
