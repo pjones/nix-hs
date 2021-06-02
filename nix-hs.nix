@@ -42,6 +42,10 @@
   # applied.  This is important for passing on to other invocations of
   # nix-hs for any dependencies so they pick up the already patched
   # dependencies from this overrides function.
+  #
+  # An example overrides function can be found in:
+  #
+  #     test/overrides/default.nix
 , overrides ? (lib: self: super: { })
 
   # Extra nixpkgs packages that your Haskell package depend on:

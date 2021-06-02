@@ -127,7 +127,7 @@ In the example above, the `overrides` function takes three arguments:
      - `unBreak`: Remove the `broken` flag from a package
      - `compilerName`: The nixpkgs name of the Haskell compiler
        being used (e.g. `ghc884`)
-     - `pkgs`: The full package set, after overriding
+     - `pkgs`: The full nixpkgs package set, after overriding
 
   2. `self`: The final set of Haskell packages after applying all
      overrides.  This refers to the future version of the package set
@@ -142,6 +142,10 @@ In the example above, the `overrides` function takes three arguments:
 The `overrides` function should return an attribute set of Haskell
 packages.  The set of returned packages will be merged into the final
 set used to build your package.
+
+An example package using the `overrides` function can be found in
+`test/overrides/default.nix`.  The full list of additional `lib`
+functions is in `lib/haskell.nix`.
 
 ### Working with Multi-Package Cabal Projects
 

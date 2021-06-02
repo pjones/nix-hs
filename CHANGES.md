@@ -18,6 +18,9 @@
     This prevents the dreaded `dumping very large path (> 256 MiB)`
     warning.
 
+  * Added another test package to demonstrate the `overrides` function
+    in `test/overrides/default.nix`.
+
 ## 20.09 (November 22, 2020)
 
   * Update nixpkgs to pull in GHC 8.8.4 and 8.10.2.

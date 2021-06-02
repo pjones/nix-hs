@@ -9,7 +9,12 @@ set -x
 
 ################################################################################
 top=$(realpath "$(dirname "$0")")
-packages=("$top/hello-world" "$top/multi-package")
+
+packages=(
+  "$top/hello-world"
+  "$top/overrides"
+  "$top/multi-package"
+)
 
 ################################################################################
 run_build() {
