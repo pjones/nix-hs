@@ -10,6 +10,7 @@
 #
 # Functions for modifying Haskell derivations.
 { pkgs
+, ghc
 }:
 let
   lib = pkgs.lib;
@@ -30,6 +31,9 @@ let
     };
 in
 pkgs.haskell.lib // {
+
+  # Expose the selected compiler's attribute name (e.g., ghc8104):
+  compilerName = ghc.attrName;
 
   # Override a derivation so that its source is smaller:
   cleanSource = src: drv:
