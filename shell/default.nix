@@ -31,6 +31,7 @@ let
     cabal-install
     haskell-language-server
     hasktags
+    hlint
     hoogle
     ormolu
     stan
