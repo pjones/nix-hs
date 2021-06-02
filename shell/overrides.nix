@@ -29,9 +29,15 @@ self: super: {
   # Packages that work fine with GHC 9.0.1:
   cryptohash-md5 = doJailbreak super.cryptohash-md5;
   cryptohash-sha1 = doJailbreak super.cryptohash-sha1;
-  mono-traversable = dontCheck super.mono-traversable;
-  retry = dontCheck super.retry;
+
+  # https://github.com/haskell-hvr/text-short/issues/20
   text-short = dontCheck super.text-short;
+
+  # https://github.com/Soostone/retry/issues/71
+  retry = dontCheck super.retry;
+
+  # https://github.com/snoyberg/mono-traversable/issues/192
+  mono-traversable = dontCheck super.mono-traversable;
 
   # Packages that have specific versions for GHC 9.0.1:
   cryptonite = super.cryptonite_0_29;
@@ -40,6 +46,7 @@ self: super: {
 
   # No released version supports Cabal 3.4 or GHC 9.0.1, but the
   # latest commit does have support if you jailbreak it.
+  # https://github.com/phadej/cabal-fmt/pull/32
   cabal-fmt =
     let
       src = fetchFromGitHub {
