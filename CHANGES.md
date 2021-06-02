@@ -1,6 +1,6 @@
 # Release History
 
-## 21.05 (Unreleased)
+## 21.05 (June 3, 2021)
 
   * The deprecated `enableFullyStaticExecutables` argument was removed
     along with direct support for `static-haskell.nix`.
